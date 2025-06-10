@@ -84,6 +84,10 @@ export class DiscordMCPServer {
             toolResponse = await deleteCategoryHandler(args, this.toolContext);
             return toolResponse;
 
+          case "discord_login": toolResponse = await loginHandler(args, this.toolContext);
+            this.logClientState("after discord_login handler");
+            return toolResponse;
+
           case "discord_send":
             this.logClientState("before discord_send handler");
             toolResponse = await sendMessageHandler(args, this.toolContext);

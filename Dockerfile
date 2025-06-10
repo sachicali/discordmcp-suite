@@ -22,5 +22,5 @@ ENV DISCORD_TOKEN=""
 # Expose HTTP port
 EXPOSE 8080
 
-# Default command to run the MCP server with HTTP transport and Discord token
+# Default command to run the MCP server with HTTP transport
 CMD ["node", "build/index.js", "--transport", "http", "--port", "8080"]
