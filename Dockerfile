@@ -7,17 +7,14 @@ WORKDIR /app
 # Copy package files
 COPY package.json package-lock.json ./
 
-# Install dependencies
-RUN npm ci
+# Install dependencies without running scripts
+RUN npm install --ignore-scripts
 
 # Copy source code
 COPY . .
 
 # Build the TypeScript code
 RUN npm run build
-
-# Set environment variable for Discord token
-ENV DISCORD_TOKEN=""
 
 # Expose HTTP port
 EXPOSE 8080
