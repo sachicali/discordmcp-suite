@@ -74,6 +74,15 @@ MCP-Discord provides the following Discord-related functionalities:
 
 ## Installation
 
+### Installing via NPM
+
+You can use it with the following command:
+```bash
+npx mcp-discord --config ${DISCORD_TOKEN}
+```
+
+For more details, you can check out the [NPM Package](https://www.npmjs.com/package/mcp-discord).
+
 ### Installing via Smithery
 
 To install mcp-discord automatically via [Smithery](https://smithery.ai/server/@barryyip0625/mcp-discord)
