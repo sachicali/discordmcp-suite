@@ -1,5 +1,5 @@
 # MCP-Discord
-[![smithery badge](https://smithery.ai/badge/@barryyip0625/mcp-discord)](https://smithery.ai/server/@barryyip0625/mcp-discord) ![](https://badge.mcpx.dev?type=server 'MCP Server')
+[![smithery badge](https://smithery.ai/badge/@barryyip0625/mcp-discord)](https://smithery.ai/server/@barryyip0625/mcp-discord) ![](https://badge.mcpx.dev?type=server 'MCP Server') [![Docker Hub](https://img.shields.io/docker/v/barryy625/mcp-discord?logo=docker&label=Docker%20Hub)](https://hub.docker.com/r/barryy625/mcp-discord)
 
 A Discord MCP (Model Context Protocol) server that enables AI assistants to interact with the Discord platform.
 
@@ -87,6 +87,27 @@ For more details, you can check out the [NPM Package](https://www.npmjs.com/pack
 
 To install mcp-discord automatically via [Smithery](https://smithery.ai/server/@barryyip0625/mcp-discord)
 
+### Installing via Docker
+
+You can run mcp-discord using Docker. The Docker images are automatically built and published to Docker Hub.
+
+**Docker Hub Repository**: [barryy625/mcp-discord](https://hub.docker.com/r/barryy625/mcp-discord)
+
+```bash
+# Pull the latest image
+docker pull barryy625/mcp-discord:latest
+
+# Run with environment variable
+docker run -e DISCORD_TOKEN=your_discord_bot_token -p 8080:8080 barryy625/mcp-discord:latest
+
+# Or run with command line config
+docker run -p 8080:8080 barryy625/mcp-discord:latest --config "your_discord_bot_token"
+```
+
+**Available Tags:**
+- `latest` - Latest stable version from main branch
+- `v1.3.3`, etc. - Specific version releases
+
 ### Manual Installation
 ```bash
 # Clone the repository
@@ -134,6 +155,33 @@ node build/index.js --transport http --port 3000 --config "your_discord_bot_toke
 ```
 
 ## Usage with Claude/Cursor
+
+### Docker
+
+You can use Docker containers with both Claude and Cursor:
+
+```json
+{
+    "mcpServers": {
+        "discord": {
+            "command": "docker",
+            "args": [
+                "run",
+                "--rm",
+                "-e",
+                "DISCORD_TOKEN=your_discord_bot_token",
+                "-p",
+                "8080:8080",
+                "barryy625/mcp-discord:latest",
+                "--transport",
+                "http",
+                "--port",
+                "8080"
+            ]
+        }
+    }
+}
+```
 
 ### Claude
 
