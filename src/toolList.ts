@@ -51,6 +51,75 @@ export const toolList = [
     },
   },
   {
+    name: "discord_set_token",
+    description: "Sets and saves a Discord bot token for authentication",
+    inputSchema: {
+      type: "object",
+      properties: {
+        token: { type: "string" },
+      },
+      required: ["token"],
+    },
+  },
+  {
+    name: "discord_validate_token",
+    description: "Validates the format and basic structure of a Discord token",
+    inputSchema: {
+      type: "object",
+      properties: {},
+      required: [],
+    },
+  },
+  {
+    name: "discord_login_status",
+    description:
+      "Shows current login status, configuration, and health information",
+    inputSchema: {
+      type: "object",
+      properties: {},
+      required: [],
+    },
+  },
+  {
+    name: "discord_logout",
+    description: "Logs out from Discord and disconnects the client",
+    inputSchema: {
+      type: "object",
+      properties: {},
+      required: [],
+    },
+  },
+  {
+    name: "discord_update_config",
+    description: "Updates server configuration settings at runtime",
+    inputSchema: {
+      type: "object",
+      properties: {
+        ALLOW_GUILD_IDS: { type: "array", items: { type: "string" } },
+        ALLOW_CHANNEL_IDS: { type: "array", items: { type: "string" } },
+        ENABLE_USER_MANAGEMENT: { type: "boolean" },
+        ENABLE_VOICE_CHANNELS: { type: "boolean" },
+        ENABLE_DIRECT_MESSAGES: { type: "boolean" },
+        ENABLE_SERVER_MANAGEMENT: { type: "boolean" },
+        ENABLE_RBAC: { type: "boolean" },
+        ENABLE_CONTENT_MANAGEMENT: { type: "boolean" },
+        TRANSPORT: { type: "string", enum: ["stdio", "http"] },
+        HTTP_PORT: { type: "number" },
+      },
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "discord_health_check",
+    description:
+      "Performs a comprehensive health check of the Discord MCP server",
+    inputSchema: {
+      type: "object",
+      properties: {},
+      required: [],
+    },
+  },
+  {
     name: "discord_send",
     description: "Sends a message to a specified Discord text channel",
     inputSchema: {
@@ -368,6 +437,18 @@ export const toolList = [
         reason: { type: "string" },
       },
       required: ["webhookId"],
+    },
+  },
+  {
+    name: "discord_list_webhooks",
+    description: "Lists all webhooks for a Discord server or specific channel",
+    inputSchema: {
+      type: "object",
+      properties: {
+        guildId: { type: "string" },
+        channelId: { type: "string" },
+      },
+      required: ["guildId"],
     },
   },
   {

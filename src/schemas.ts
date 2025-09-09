@@ -4,6 +4,16 @@ export const DiscordLoginSchema = z.object({
   token: z.string().optional(),
 });
 
+export const SetTokenSchema = z.object({
+  token: z.string(),
+});
+
+export const ValidateTokenSchema = z.object({});
+
+export const LoginStatusSchema = z.object({});
+
+export const LogoutSchema = z.object({});
+
 export const SendMessageSchema = z.object({
   channelId: z.string(),
   message: z.string(),
@@ -145,6 +155,11 @@ export const DeleteWebhookSchema = z.object({
   webhookId: z.string(),
   webhookToken: z.string().optional(),
   reason: z.string().optional(),
+});
+
+export const ListWebhooksSchema = z.object({
+  guildId: z.string(),
+  channelId: z.string().optional(), // Optional: filter by specific channel
 });
 
 // User Management Schemas
