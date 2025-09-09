@@ -4,55 +4,13 @@ import { config as dotenvConfig } from "dotenv";
 import { DiscordMCPServer } from "./server.js";
 import { StdioTransport, StreamableHttpTransport } from "./transport.js";
 import { info, error } from "./logger.js";
+import { configManager } from "./config.js";
 
 // Load environment variables from .env file if exists
 dotenvConfig();
 
-// Configuration with priority for command line arguments
-const config = {
-  DISCORD_TOKEN: (() => {
-    try {
-      // First try to get from command line arguments
-      const configIndex = process.argv.indexOf("--config");
-      if (configIndex !== -1 && configIndex + 1 < process.argv.length) {
-        const configArg = process.argv[configIndex + 1];
-        // Handle both string and object formats
-        if (typeof configArg === "string") {
-          try {
-            const parsedConfig = JSON.parse(configArg);
-            return parsedConfig.DISCORD_TOKEN;
-          } catch (err) {
-            // If not valid JSON, try using the string directly
-            return configArg;
-          }
-        }
-      }
-      // Then try environment variable
-      return process.env.DISCORD_TOKEN;
-    } catch (err) {
-      error("Error parsing config: " + String(err));
-      return null;
-    }
-  })(),
-  TRANSPORT: (() => {
-    // Check for transport type argument
-    const transportIndex = process.argv.indexOf("--transport");
-    if (transportIndex !== -1 && transportIndex + 1 < process.argv.length) {
-      return process.argv[transportIndex + 1];
-    }
-    // Default to stdio
-    return "stdio";
-  })(),
-  HTTP_PORT: (() => {
-    // Check for port argument
-    const portIndex = process.argv.indexOf("--port");
-    if (portIndex !== -1 && portIndex + 1 < process.argv.length) {
-      return parseInt(process.argv[portIndex + 1]);
-    }
-    // Default port for MCP
-    return 8080;
-  })(),
-};
+// Get configuration from the config manager
+const config = configManager.getConfig();
 
 // Create Discord client
 const client = new Client({
@@ -68,38 +26,69 @@ if (config.DISCORD_TOKEN) {
   client.token = config.DISCORD_TOKEN;
 }
 
-// Auto-login on startup if token is available
+// Enhanced auto-login with better error handling for Smithery deployment
 const autoLogin = async () => {
   const token = config.DISCORD_TOKEN;
-  if (token) {
-    try {
-      await client.login(token);
-      // Wait for the client to be ready
-      if (!client.isReady()) {
-        await new Promise<void>((resolve) => {
-          client.once("ready", () => {
-            info("Discord client is now ready");
-            resolve();
-          });
+
+  if (!token) {
+    info(
+      "No Discord token configured. Server will start but Discord functionality will be limited.",
+    );
+    info(
+      "To enable Discord features, set the DISCORD_TOKEN environment variable or use the discord_login tool.",
+    );
+    return;
+  }
+
+  try {
+    info("Attempting to log in to Discord...");
+    await client.login(token);
+
+    // Wait for the client to be ready with timeout
+    if (!client.isReady()) {
+      await new Promise<void>((resolve, reject) => {
+        const timeout = setTimeout(() => {
+          reject(new Error("Discord client ready timeout after 30 seconds"));
+        }, 30000);
+
+        client.once("ready", () => {
+          clearTimeout(timeout);
+          info(`Discord client is now ready as: ${client.user?.tag}`);
+          resolve();
         });
-      }
-      info("Successfully logged in to Discord and client is ready");
-    } catch (err: any) {
-      if (
-        typeof err.message === "string" &&
-        err.message.includes(
-          "Privileged intent provided is not enabled or whitelisted",
-        )
-      ) {
-        error(
-          "Login failed: One or more privileged intents are not enabled in the Discord Developer Portal. Please enable the required intents.",
-        );
-      } else {
-        error("Auto-login failed: " + String(err));
-      }
+      });
     }
-  } else {
-    info("No Discord token found in config, skipping auto-login");
+
+    info("Successfully logged in to Discord and client is ready");
+
+    // Log additional connection info
+    info(`Connected to ${client.guilds.cache.size} servers`);
+    info(`Available in ${client.channels.cache.size} channels`);
+  } catch (err: any) {
+    const errorMessage = err instanceof Error ? err.message : String(err);
+
+    if (errorMessage.includes("Privileged intent provided is not enabled")) {
+      error(
+        "Login failed: Privileged intents not enabled in Discord Developer Portal",
+      );
+      error("Required intents: Message Content, Server Members, Presence");
+      error(
+        "Please enable these in https://discord.com/developers/applications",
+      );
+    } else if (errorMessage.includes("Invalid token")) {
+      error("Login failed: Invalid Discord token provided");
+      error("Please check your DISCORD_TOKEN environment variable");
+    } else if (errorMessage.includes("Connection timeout")) {
+      error("Login failed: Connection timeout - check network connectivity");
+    } else {
+      error(`Auto-login failed: ${errorMessage}`);
+    }
+
+    // For Smithery deployment, don't exit on login failure
+    // Just log the error and continue - user can use discord_login tool later
+    error(
+      "Server will continue without Discord functionality. Use discord_login tool to connect later.",
+    );
   }
 };
 

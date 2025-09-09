@@ -55,6 +55,7 @@ MCP-Discord provides comprehensive Discord integration with both basic and advan
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Tools Documentation](#tools-documentation)
+  - [Login Management](#login-management)
   - [Basic Functions](#basic-functions)
   - [Channel Management](#channel-management)
   - [Forum Functions](#forum-functions)
@@ -515,6 +516,16 @@ You can use Docker containers with both Claude and Cursor. For full functionalit
 
 ## Tools Documentation
 
+### Login Management (New)
+
+- `discord_login`: Logs in to Discord using configured token
+- `discord_set_token`: Sets and saves a Discord bot token for authentication
+- `discord_validate_token`: Validates token format and basic structure
+- `discord_login_status`: Shows current login status, configuration, and health
+- `discord_logout`: Logs out from Discord and disconnects the client
+- `discord_update_config`: Updates server configuration settings at runtime
+- `discord_health_check`: Performs comprehensive health check of the server
+
 ### Basic Functions
 
 - `discord_send`: Send a message to a specified channel (supports both channel ID and channel name)
@@ -908,6 +919,59 @@ You can use Docker containers with both Claude and Cursor. For full functionalit
     "icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==",
     "reason": "Updating server icon"
   }
+}
+```
+
+### Login Management
+
+#### Set Discord Token
+
+```json
+{
+  "tool": "discord_set_token",
+  "input": {
+    "token": "Bot YOUR_DISCORD_BOT_TOKEN_HERE"
+  }
+}
+```
+
+#### Validate Token
+
+```json
+{
+  "tool": "discord_validate_token",
+  "input": {}
+}
+```
+
+#### Check Login Status
+
+```json
+{
+  "tool": "discord_login_status",
+  "input": {}
+}
+```
+
+#### Update Configuration
+
+```json
+{
+  "tool": "discord_update_config",
+  "input": {
+    "ENABLE_USER_MANAGEMENT": true,
+    "ENABLE_VOICE_CHANNELS": true,
+    "ALLOW_GUILD_IDS": ["123456789012345678", "987654321098765432"]
+  }
+}
+```
+
+#### Health Check
+
+```json
+{
+  "tool": "discord_health_check",
+  "input": {}
 }
 ```
 

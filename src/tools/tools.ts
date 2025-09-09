@@ -1,7 +1,15 @@
 import { Client } from "discord.js";
 import { z } from "zod";
 import { ToolResponse, ToolContext, ToolHandler } from "./types.js";
-import { loginHandler } from "./login.js";
+import {
+  loginHandler,
+  setTokenHandler,
+  validateTokenHandler,
+  loginStatusHandler,
+  logoutHandler,
+  updateConfigHandler,
+  healthCheckHandler,
+} from "./login.js";
 import { sendMessageHandler } from "./send-message.js";
 import {
   getForumChannelsHandler,
@@ -52,6 +60,7 @@ import {
   sendWebhookMessageHandler,
   editWebhookHandler,
   deleteWebhookHandler,
+  listWebhooksHandler,
 } from "./webhooks.js";
 import {
   getUserInfoHandler,
@@ -74,6 +83,12 @@ import { sendDirectMessageHandler, getDirectMessagesHandler } from "./dm.js";
 // Export tool handlers
 export {
   loginHandler,
+  setTokenHandler,
+  validateTokenHandler,
+  loginStatusHandler,
+  logoutHandler,
+  updateConfigHandler,
+  healthCheckHandler,
   sendMessageHandler,
   getForumChannelsHandler,
   createForumPostHandler,
@@ -114,6 +129,7 @@ export {
   sendWebhookMessageHandler,
   editWebhookHandler,
   deleteWebhookHandler,
+  listWebhooksHandler,
   createCategoryHandler,
   editCategoryHandler,
   deleteCategoryHandler,

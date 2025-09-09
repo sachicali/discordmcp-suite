@@ -9,6 +9,12 @@ import { toolList } from "./toolList.js";
 import {
   createToolContext,
   loginHandler,
+  setTokenHandler,
+  validateTokenHandler,
+  loginStatusHandler,
+  logoutHandler,
+  updateConfigHandler,
+  healthCheckHandler,
   sendMessageHandler,
   getForumChannelsHandler,
   createForumPostHandler,
@@ -66,6 +72,7 @@ import {
   sendWebhookMessageHandler,
   editWebhookHandler,
   deleteWebhookHandler,
+  listWebhooksHandler,
   sendDirectMessageHandler,
   getDirectMessagesHandler,
 } from "./tools/tools.js";
@@ -125,6 +132,31 @@ export class DiscordMCPServer {
           case "discord_login":
             toolResponse = await loginHandler(args, this.toolContext);
             this.logClientState("after discord_login handler");
+            return toolResponse;
+
+          case "discord_set_token":
+            toolResponse = await setTokenHandler(args, this.toolContext);
+            return toolResponse;
+
+          case "discord_validate_token":
+            toolResponse = await validateTokenHandler(args, this.toolContext);
+            return toolResponse;
+
+          case "discord_login_status":
+            toolResponse = await loginStatusHandler(args, this.toolContext);
+            return toolResponse;
+
+          case "discord_logout":
+            toolResponse = await logoutHandler(args, this.toolContext);
+            this.logClientState("after discord_logout handler");
+            return toolResponse;
+
+          case "discord_update_config":
+            toolResponse = await updateConfigHandler(args, this.toolContext);
+            return toolResponse;
+
+          case "discord_health_check":
+            toolResponse = await healthCheckHandler(args, this.toolContext);
             return toolResponse;
 
           case "discord_send":
@@ -267,6 +299,11 @@ export class DiscordMCPServer {
           case "discord_delete_webhook":
             this.logClientState("before discord_delete_webhook handler");
             toolResponse = await deleteWebhookHandler(args, this.toolContext);
+            return toolResponse;
+
+          case "discord_list_webhooks":
+            this.logClientState("before discord_list_webhooks handler");
+            toolResponse = await listWebhooksHandler(args, this.toolContext);
             return toolResponse;
 
           case "discord_get_user_info":
