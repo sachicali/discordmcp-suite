@@ -5,7 +5,7 @@ import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
-import { toolList } from './toolList.js';
+import { toolList } from "./toolList.js";
 import {
   createToolContext,
   loginHandler,
@@ -16,9 +16,48 @@ import {
   replyToForumHandler,
   deleteForumPostHandler,
   createTextChannelHandler,
+  createForumChannelHandler,
+  editChannelHandler,
   deleteChannelHandler,
   readMessagesHandler,
   getServerInfoHandler,
+  createCategoryHandler,
+  editCategoryHandler,
+  deleteCategoryHandler,
+  listServersHandler,
+  createChannelUnderCategoryHandler,
+  moveChannelToCategoryHandler,
+  updateServerSettingsHandler,
+  updateServerEngagementHandler,
+  updateWelcomeScreenHandler,
+  createEmojiHandler,
+  deleteEmojiHandler,
+  listEmojisHandler,
+  createStickerHandler,
+  deleteStickerHandler,
+  listStickersHandler,
+  createInviteHandler,
+  deleteInviteHandler,
+  listInvitesHandler,
+  listIntegrationsHandler,
+  deleteIntegrationHandler,
+  createSoundboardSoundHandler,
+  deleteSoundboardSoundHandler,
+  listSoundboardSoundsHandler,
+  getUserInfoHandler,
+  getGuildMemberHandler,
+  listGuildMembersHandler,
+  addRoleToMemberHandler,
+  removeRoleFromMemberHandler,
+  kickMemberHandler,
+  banMemberHandler,
+  unbanMemberHandler,
+  timeoutMemberHandler,
+  createRoleHandler,
+  editRoleHandler,
+  deleteRoleHandler,
+  listRolesHandler,
+  getRolePermissionsHandler,
   addReactionHandler,
   addMultipleReactionsHandler,
   removeReactionHandler,
@@ -27,12 +66,11 @@ import {
   sendWebhookMessageHandler,
   editWebhookHandler,
   deleteWebhookHandler,
-  createCategoryHandler,
-  editCategoryHandler,
-  deleteCategoryHandler
-} from './tools/tools.js';
-import { MCPTransport } from './transport.js';
-import { info, error } from './logger.js';
+  sendDirectMessageHandler,
+  getDirectMessagesHandler,
+} from "./tools/tools.js";
+import { MCPTransport } from "./transport.js";
+import { info, error } from "./logger.js";
 
 export class DiscordMCPServer {
   private server: Server;
@@ -40,19 +78,19 @@ export class DiscordMCPServer {
   private clientStatusInterval: NodeJS.Timeout | null = null;
 
   constructor(
-    private client: Client, 
-    private transport: MCPTransport
+    private client: Client,
+    private transport: MCPTransport,
   ) {
     this.server = new Server(
       {
         name: "MCP-Discord",
-        version: "1.0.0"
+        version: "1.0.0",
       },
       {
         capabilities: {
-          tools: {}
-        }
-      }
+          tools: {},
+        },
+      },
     );
 
     this.toolContext = createToolContext(client);
@@ -63,7 +101,7 @@ export class DiscordMCPServer {
     // Set up the tool list
     this.server.setRequestHandler(ListToolsRequestSchema, async () => {
       return {
-        tools: toolList
+        tools: toolList,
       };
     });
 
@@ -84,7 +122,8 @@ export class DiscordMCPServer {
             toolResponse = await deleteCategoryHandler(args, this.toolContext);
             return toolResponse;
 
-          case "discord_login": toolResponse = await loginHandler(args, this.toolContext);
+          case "discord_login":
+            toolResponse = await loginHandler(args, this.toolContext);
             this.logClientState("after discord_login handler");
             return toolResponse;
 
@@ -95,7 +134,10 @@ export class DiscordMCPServer {
 
           case "discord_get_forum_channels":
             this.logClientState("before discord_get_forum_channels handler");
-            toolResponse = await getForumChannelsHandler(args, this.toolContext);
+            toolResponse = await getForumChannelsHandler(
+              args,
+              this.toolContext,
+            );
             return toolResponse;
 
           case "discord_create_forum_post":
@@ -120,7 +162,23 @@ export class DiscordMCPServer {
 
           case "discord_create_text_channel":
             this.logClientState("before discord_create_text_channel handler");
-            toolResponse = await createTextChannelHandler(args, this.toolContext);
+            toolResponse = await createTextChannelHandler(
+              args,
+              this.toolContext,
+            );
+            return toolResponse;
+
+          case "discord_create_forum_channel":
+            this.logClientState("before discord_create_forum_channel handler");
+            toolResponse = await createForumChannelHandler(
+              args,
+              this.toolContext,
+            );
+            return toolResponse;
+
+          case "discord_edit_channel":
+            this.logClientState("before discord_edit_channel handler");
+            toolResponse = await editChannelHandler(args, this.toolContext);
             return toolResponse;
 
           case "discord_delete_channel":
@@ -138,14 +196,44 @@ export class DiscordMCPServer {
             toolResponse = await getServerInfoHandler(args, this.toolContext);
             return toolResponse;
 
+          case "discord_list_servers":
+            this.logClientState("before discord_list_servers handler");
+            toolResponse = await listServersHandler(args, this.toolContext);
+            return toolResponse;
+
+          case "discord_create_channel_under_category":
+            this.logClientState(
+              "before discord_create_channel_under_category handler",
+            );
+            toolResponse = await createChannelUnderCategoryHandler(
+              args,
+              this.toolContext,
+            );
+            return toolResponse;
+
+          case "discord_move_channel_to_category":
+            this.logClientState(
+              "before discord_move_channel_to_category handler",
+            );
+            toolResponse = await moveChannelToCategoryHandler(
+              args,
+              this.toolContext,
+            );
+            return toolResponse;
+
           case "discord_add_reaction":
             this.logClientState("before discord_add_reaction handler");
             toolResponse = await addReactionHandler(args, this.toolContext);
             return toolResponse;
 
           case "discord_add_multiple_reactions":
-            this.logClientState("before discord_add_multiple_reactions handler");
-            toolResponse = await addMultipleReactionsHandler(args, this.toolContext);
+            this.logClientState(
+              "before discord_add_multiple_reactions handler",
+            );
+            toolResponse = await addMultipleReactionsHandler(
+              args,
+              this.toolContext,
+            );
             return toolResponse;
 
           case "discord_remove_reaction":
@@ -165,7 +253,10 @@ export class DiscordMCPServer {
 
           case "discord_send_webhook_message":
             this.logClientState("before discord_send_webhook_message handler");
-            toolResponse = await sendWebhookMessageHandler(args, this.toolContext);
+            toolResponse = await sendWebhookMessageHandler(
+              args,
+              this.toolContext,
+            );
             return toolResponse;
 
           case "discord_edit_webhook":
@@ -178,52 +269,277 @@ export class DiscordMCPServer {
             toolResponse = await deleteWebhookHandler(args, this.toolContext);
             return toolResponse;
 
+          case "discord_get_user_info":
+            this.logClientState("before discord_get_user_info handler");
+            toolResponse = await getUserInfoHandler(args, this.toolContext);
+            return toolResponse;
+
+          case "discord_get_guild_member":
+            this.logClientState("before discord_get_guild_member handler");
+            toolResponse = await getGuildMemberHandler(args, this.toolContext);
+            return toolResponse;
+
+          case "discord_list_guild_members":
+            this.logClientState("before discord_list_guild_members handler");
+            toolResponse = await listGuildMembersHandler(
+              args,
+              this.toolContext,
+            );
+            return toolResponse;
+
+          case "discord_add_role_to_member":
+            this.logClientState("before discord_add_role_to_member handler");
+            toolResponse = await addRoleToMemberHandler(args, this.toolContext);
+            return toolResponse;
+
+          case "discord_remove_role_from_member":
+            this.logClientState(
+              "before discord_remove_role_from_member handler",
+            );
+            toolResponse = await removeRoleFromMemberHandler(
+              args,
+              this.toolContext,
+            );
+            return toolResponse;
+
+          case "discord_kick_member":
+            this.logClientState("before discord_kick_member handler");
+            toolResponse = await kickMemberHandler(args, this.toolContext);
+            return toolResponse;
+
+          case "discord_ban_member":
+            this.logClientState("before discord_ban_member handler");
+            toolResponse = await banMemberHandler(args, this.toolContext);
+            return toolResponse;
+
+          case "discord_unban_member":
+            this.logClientState("before discord_unban_member handler");
+            toolResponse = await unbanMemberHandler(args, this.toolContext);
+            return toolResponse;
+
+          case "discord_timeout_member":
+            this.logClientState("before discord_timeout_member handler");
+            toolResponse = await timeoutMemberHandler(args, this.toolContext);
+            return toolResponse;
+
+          case "discord_create_role":
+            this.logClientState("before discord_create_role handler");
+            toolResponse = await createRoleHandler(args, this.toolContext);
+            return toolResponse;
+
+          case "discord_edit_role":
+            this.logClientState("before discord_edit_role handler");
+            toolResponse = await editRoleHandler(args, this.toolContext);
+            return toolResponse;
+
+          case "discord_delete_role":
+            this.logClientState("before discord_delete_role handler");
+            toolResponse = await deleteRoleHandler(args, this.toolContext);
+            return toolResponse;
+
+          case "discord_list_roles":
+            this.logClientState("before discord_list_roles handler");
+            toolResponse = await listRolesHandler(args, this.toolContext);
+            return toolResponse;
+
+          case "discord_get_role_permissions":
+            this.logClientState("before discord_get_role_permissions handler");
+            toolResponse = await getRolePermissionsHandler(
+              args,
+              this.toolContext,
+            );
+            return toolResponse;
+
+          case "discord_send_direct_message":
+            this.logClientState("before discord_send_direct_message handler");
+            toolResponse = await sendDirectMessageHandler(
+              args,
+              this.toolContext,
+            );
+            return toolResponse;
+
+          case "discord_get_direct_messages":
+            this.logClientState("before discord_get_direct_messages handler");
+            toolResponse = await getDirectMessagesHandler(
+              args,
+              this.toolContext,
+            );
+            return toolResponse;
+
+          case "discord_update_server_settings":
+            this.logClientState(
+              "before discord_update_server_settings handler",
+            );
+            toolResponse = await updateServerSettingsHandler(
+              args,
+              this.toolContext,
+            );
+            return toolResponse;
+
+          case "discord_update_server_engagement":
+            this.logClientState(
+              "before discord_update_server_engagement handler",
+            );
+            toolResponse = await updateServerEngagementHandler(
+              args,
+              this.toolContext,
+            );
+            return toolResponse;
+
+          case "discord_update_welcome_screen":
+            this.logClientState("before discord_update_welcome_screen handler");
+            toolResponse = await updateWelcomeScreenHandler(
+              args,
+              this.toolContext,
+            );
+            return toolResponse;
+
+          case "discord_create_emoji":
+            this.logClientState("before discord_create_emoji handler");
+            toolResponse = await createEmojiHandler(args, this.toolContext);
+            return toolResponse;
+
+          case "discord_delete_emoji":
+            this.logClientState("before discord_delete_emoji handler");
+            toolResponse = await deleteEmojiHandler(args, this.toolContext);
+            return toolResponse;
+
+          case "discord_list_emojis":
+            this.logClientState("before discord_list_emojis handler");
+            toolResponse = await listEmojisHandler(args, this.toolContext);
+            return toolResponse;
+
+          case "discord_create_sticker":
+            this.logClientState("before discord_create_sticker handler");
+            toolResponse = await createStickerHandler(args, this.toolContext);
+            return toolResponse;
+
+          case "discord_delete_sticker":
+            this.logClientState("before discord_delete_sticker handler");
+            toolResponse = await deleteStickerHandler(args, this.toolContext);
+            return toolResponse;
+
+          case "discord_list_stickers":
+            this.logClientState("before discord_list_stickers handler");
+            toolResponse = await listStickersHandler(args, this.toolContext);
+            return toolResponse;
+
+          case "discord_create_invite":
+            this.logClientState("before discord_create_invite handler");
+            toolResponse = await createInviteHandler(args, this.toolContext);
+            return toolResponse;
+
+          case "discord_delete_invite":
+            this.logClientState("before discord_delete_invite handler");
+            toolResponse = await deleteInviteHandler(args, this.toolContext);
+            return toolResponse;
+
+          case "discord_list_invites":
+            this.logClientState("before discord_list_invites handler");
+            toolResponse = await listInvitesHandler(args, this.toolContext);
+            return toolResponse;
+
+          case "discord_list_integrations":
+            this.logClientState("before discord_list_integrations handler");
+            toolResponse = await listIntegrationsHandler(
+              args,
+              this.toolContext,
+            );
+            return toolResponse;
+
+          case "discord_delete_integration":
+            this.logClientState("before discord_delete_integration handler");
+            toolResponse = await deleteIntegrationHandler(
+              args,
+              this.toolContext,
+            );
+            return toolResponse;
+
+          case "discord_create_soundboard_sound":
+            this.logClientState(
+              "before discord_create_soundboard_sound handler",
+            );
+            toolResponse = await createSoundboardSoundHandler(
+              args,
+              this.toolContext,
+            );
+            return toolResponse;
+
+          case "discord_delete_soundboard_sound":
+            this.logClientState(
+              "before discord_delete_soundboard_sound handler",
+            );
+            toolResponse = await deleteSoundboardSoundHandler(
+              args,
+              this.toolContext,
+            );
+            return toolResponse;
+
+          case "discord_list_soundboard_sounds":
+            this.logClientState(
+              "before discord_list_soundboard_sounds handler",
+            );
+            toolResponse = await listSoundboardSoundsHandler(
+              args,
+              this.toolContext,
+            );
+            return toolResponse;
+
           default:
             throw new Error(`Unknown tool: ${name}`);
         }
       } catch (error) {
         if (error instanceof z.ZodError) {
           return {
-            content: [{
-              type: "text",
-              text: `Invalid arguments: ${error.errors
-                .map((e: z.ZodIssue) => `${e.path.join(".")}: ${e.message}`)
-                .join(", ")}`
-            }],
-            isError: true
+            content: [
+              {
+                type: "text",
+                text: `Invalid arguments: ${error.errors
+                  .map((e: z.ZodIssue) => `${e.path.join(".")}: ${e.message}`)
+                  .join(", ")}`,
+              },
+            ],
+            isError: true,
           };
         }
 
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        const errorMessage =
+          error instanceof Error ? error.message : "Unknown error";
         return {
-          content: [{ type: "text", text: `Error executing tool: ${errorMessage}` }],
-          isError: true
+          content: [
+            { type: "text", text: `Error executing tool: ${errorMessage}` },
+          ],
+          isError: true,
         };
       }
     });
   }
 
   private logClientState(context: string) {
-    info(`Discord client state [${context}]: ${JSON.stringify({
-      isReady: this.client.isReady(),
-      hasToken: !!this.client.token,
-      user: this.client.user ? {
-        id: this.client.user.id,
-        tag: this.client.user.tag,
-      } : null
-    })}`);
+    info(
+      `Discord client state [${context}]: ${JSON.stringify({
+        isReady: this.client.isReady(),
+        hasToken: !!this.client.token,
+        user: this.client.user
+          ? {
+              id: this.client.user.id,
+              tag: this.client.user.tag,
+            }
+          : null,
+      })}`,
+    );
   }
 
   async start() {
     // Add client to server context so transport can access it
     (this.server as any)._context = { client: this.client };
     (this.server as any).client = this.client;
-    
+
     // Setup periodic client state logging
     this.clientStatusInterval = setInterval(() => {
       this.logClientState("periodic check");
     }, 10000);
-    
+
     await this.transport.start(this.server);
   }
 
@@ -233,7 +549,7 @@ export class DiscordMCPServer {
       clearInterval(this.clientStatusInterval);
       this.clientStatusInterval = null;
     }
-    
+
     await this.transport.stop();
   }
-} 
+}
