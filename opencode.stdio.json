@@ -1,0 +1,23 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "discord-stdio": {
+      "type": "local",
+      "command": [
+        "node",
+        "build/index.js",
+        "--config",
+        "MTIwMTk5NDAyMjcxODAyMTcyMw.G_Zn1O.ZiYKVUH3-ztvqqLSS5ovQEPwLxvYOef7fMziaQ"
+      ],
+      "enabled": true,
+      "environment": {
+        "ALLOWED_GUILD_IDS": "",
+        "ENABLE_USER_MANAGEMENT": "1",
+        "ENABLE_VOICE_CHANNELS": "1",
+        "ENABLE_DIRECT_MESSAGES": "1",
+        "TRANSPORT": "stdio",
+        "LOG_LEVEL": "info"
+      }
+    }
+  }
+}

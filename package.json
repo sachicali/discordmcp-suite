@@ -1,7 +1,7 @@
 {
   "name": "mcp-discord",
-  "version": "1.3.4",
-  "description": "Model Context Protocol (MCP) server for Discord integration, allowing Claude and other MCP clients to interact with Discord",
+  "version": "1.4.0",
+  "description": "Comprehensive Model Context Protocol (MCP) server for Discord integration with advanced features including user management, voice channels, direct messages, and moderation tools",
   "main": "build/index.js",
   "bin": {
     "mcp-discord": "build/index.js"
