@@ -1,0 +1,24 @@
+{
+  "name": "Discord MCP Server",
+  "version": "2.3.0",
+  "description": "Enterprise Discord management MCP server with 70+ tools",
+  "server": {
+    "command": "node",
+    "args": ["build/fast-start.js"],
+    "env": {
+      "DEBUG_TOKEN": "true",
+      "ENABLE_USER_MANAGEMENT": "true",
+      "ENABLE_VOICE_CHANNELS": "true",
+      "ENABLE_DIRECT_MESSAGES": "true",
+      "ENABLE_SERVER_MANAGEMENT": "true",
+      "ENABLE_RBAC": "true",
+      "ENABLE_CONTENT_MANAGEMENT": "true"
+    }
+  },
+  "capabilities": {
+    "tools": {
+      "listChanged": false
+    }
+  },
+  "expectedToolCount": 70
+}
