@@ -1,6 +1,7 @@
 # Smithery configuration file: https://smithery.ai/docs/build/project-config/smithery.yaml
 
 version: 2
+description: "Discord MCP server with 70+ tools for community management, moderation, and automation"
 runtime: "container"
 startCommand:
   type: "http"
