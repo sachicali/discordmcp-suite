@@ -1,0 +1,32 @@
+{
+  "testSuite": "Discord MCP Server Validation",
+  "serverConfig": {
+    "command": "node build/fast-start.js",
+    "env": {
+      "DEBUG_TOKEN": "true",
+      "ENABLE_USER_MANAGEMENT": "true",
+      "ENABLE_VOICE_CHANNELS": "true",
+      "ENABLE_DIRECT_MESSAGES": "true",
+      "ENABLE_SERVER_MANAGEMENT": "true",
+      "ENABLE_RBAC": "true",
+      "ENABLE_CONTENT_MANAGEMENT": "true"
+    }
+  },
+  "validations": [
+    {
+      "type": "tool_count",
+      "expected": 70,
+      "description": "Verify all 70 tools are discovered"
+    },
+    {
+      "type": "schema_validation",
+      "tools": ["discord_send", "discord_login", "discord_create_text_channel"],
+      "description": "Validate key tool schemas have proper structure"
+    },
+    {
+      "type": "health_check",
+      "endpoint": "/health",
+      "description": "Verify server health endpoint"
+    }
+  ]
+}

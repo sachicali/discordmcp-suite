@@ -1,0 +1,394 @@
+{
+  "name": "Discord MCP Server Test Suite",
+  "description": "Comprehensive test configuration for Discord MCP server with 70+ tools",
+  "version": "1.0.0",
+  "server": {
+    "command": "node",
+    "args": ["build/fast-start.js"],
+    "env": {
+      "DEBUG_TOKEN": "true",
+      "ENABLE_USER_MANAGEMENT": "true",
+      "ENABLE_VOICE_CHANNELS": "true",
+      "ENABLE_DIRECT_MESSAGES": "true",
+      "ENABLE_SERVER_MANAGEMENT": "true",
+      "ENABLE_RBAC": "true",
+      "ENABLE_CONTENT_MANAGEMENT": "true"
+    },
+  "tests": [
+    {
+      "name": "Server Health Check",
+      "description": "Verify server starts and health endpoint responds",
+      "type": "health",
+      "endpoint": "/health",
+      "expectedStatus": 200,
+      "timeout": 5000
+    },
+    {
+      "name": "Tool Discovery",
+      "description": "Verify all 70 tools are discovered with valid schemas",
+      "type": "tool_discovery",
+      "expectedToolCount": 70,
+      "validateSchemas": true,
+      "schemaChecks": ["hasType", "hasValidProperties", "hasValidRequired"]
+    },
+    {
+      "name": "Schema Validation - Send Message",
+      "description": "Validate discord_send tool schema structure",
+      "type": "schema_validation",
+      "tool": "discord_send",
+      "expectedSchema": {
+        "type": "object",
+        "properties": {
+          "channelId": { "type": "string" },
+          "message": { "type": "string" }
+        },
+        "required": ["channelId", "message"]
+      }
+    },
+    {
+      "name": "Schema Validation - Login",
+      "description": "Validate discord_login tool schema (optional token)",
+      "type": "schema_validation",
+      "tool": "discord_login",
+      "expectedSchema": {
+        "type": "object",
+        "properties": {
+          "token": { "type": "string" }
+        }
+      }
+    },
+    {
+      "name": "Schema Validation - Status Check",
+      "description": "Validate discord_login_status tool schema (no parameters)",
+      "type": "schema_validation",
+      "tool": "discord_login_status",
+      "expectedSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "Schema Validation - Channel Creation",
+      "description": "Validate discord_create_text_channel tool schema",
+      "type": "schema_validation",
+      "tool": "discord_create_text_channel",
+      "expectedSchema": {
+        "type": "object",
+        "properties": {
+          "guildId": { "type": "string" },
+          "channelName": { "type": "string" },
+          "topic": { "type": "string" },
+          "reason": { "type": "string" }
+        },
+        "required": ["guildId", "channelName"]
+      }
+    },
+    {
+      "name": "Schema Validation - User Management",
+      "description": "Validate discord_get_user_info tool schema",
+      "type": "schema_validation",
+      "tool": "discord_get_user_info",
+      "expectedSchema": {
+        "type": "object",
+        "properties": {
+          "userId": { "type": "string" }
+        },
+        "required": ["userId"]
+      }
+    },
+    {
+      "name": "Schema Validation - Forum Tools",
+      "description": "Validate discord_create_forum_post tool schema",
+      "type": "schema_validation",
+      "tool": "discord_create_forum_post",
+      "expectedSchema": {
+        "type": "object",
+        "properties": {
+          "forumChannelId": { "type": "string" },
+          "title": { "type": "string" },
+          "content": { "type": "string" },
+          "tags": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "required": ["forumChannelId", "title", "content"]
+      }
+    },
+    {
+      "name": "Schema Validation - Reaction Tools",
+      "description": "Validate discord_add_reaction tool schema",
+      "type": "schema_validation",
+      "tool": "discord_add_reaction",
+      "expectedSchema": {
+        "type": "object",
+        "properties": {
+          "channelId": { "type": "string" },
+          "messageId": { "type": "string" },
+          "emoji": { "type": "string" }
+        },
+        "required": ["channelId", "messageId", "emoji"]
+      }
+    },
+    {
+      "name": "Schema Validation - Webhook Tools",
+      "description": "Validate discord_create_webhook tool schema",
+      "type": "schema_validation",
+      "tool": "discord_create_webhook",
+      "expectedSchema": {
+        "type": "object",
+        "properties": {
+          "channelId": { "type": "string" },
+          "name": { "type": "string" },
+          "avatar": { "type": "string" }
+        },
+        "required": ["channelId", "name"]
+      }
+    },
+    {
+      "name": "Schema Validation - Server Management",
+      "description": "Validate discord_update_server_settings tool schema",
+      "type": "schema_validation",
+      "tool": "discord_update_server_settings",
+      "expectedSchema": {
+        "type": "object",
+        "properties": {
+          "guildId": { "type": "string" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "icon": { "type": "string" },
+          "banner": { "type": "string" },
+          "reason": { "type": "string" }
+        },
+        "required": ["guildId"]
+      }
+    },
+    {
+      "name": "Schema Validation - Voice Channels",
+      "description": "Validate discord_create_voice_channel tool schema",
+      "type": "schema_validation",
+      "tool": "discord_create_voice_channel",
+      "expectedSchema": {
+        "type": "object",
+        "properties": {
+          "guildId": { "type": "string" },
+          "channelName": { "type": "string" },
+          "bitrate": { "type": "number" },
+          "userLimit": { "type": "number" },
+          "reason": { "type": "string" }
+        },
+        "required": ["guildId", "channelName"]
+      }
+    },
+    {
+      "name": "Schema Validation - Direct Messages",
+      "description": "Validate discord_send_direct_message tool schema",
+      "type": "schema_validation",
+      "tool": "discord_send_direct_message",
+      "expectedSchema": {
+        "type": "object",
+        "properties": {
+          "userId": { "type": "string" },
+          "message": { "type": "string" }
+        },
+        "required": ["userId", "message"]
+      }
+    },
+    {
+      "name": "Schema Validation - Role Management",
+      "description": "Validate discord_create_role tool schema",
+      "type": "schema_validation",
+      "tool": "discord_create_role",
+      "expectedSchema": {
+        "type": "object",
+        "properties": {
+          "guildId": { "type": "string" },
+          "name": { "type": "string" },
+          "color": { "type": "number" },
+          "permissions": { "type": "string" },
+          "mentionable": { "type": "boolean" },
+          "hoist": { "type": "boolean" },
+          "reason": { "type": "string" }
+        },
+        "required": ["guildId", "name"]
+      }
+    },
+    {
+      "name": "Schema Validation - Emoji Management",
+      "description": "Validate discord_create_emoji tool schema",
+      "type": "schema_validation",
+      "tool": "discord_create_emoji",
+      "expectedSchema": {
+        "type": "object",
+        "properties": {
+          "guildId": { "type": "string" },
+          "name": { "type": "string" },
+          "image": { "type": "string" },
+          "reason": { "type": "string" }
+        },
+        "required": ["guildId", "name", "image"]
+      }
+    },
+    {
+      "name": "Schema Validation - Invite Management",
+      "description": "Validate discord_create_invite tool schema",
+      "type": "schema_validation",
+      "tool": "discord_create_invite",
+      "expectedSchema": {
+        "type": "object",
+        "properties": {
+          "channelId": { "type": "string" },
+          "maxAge": { "type": "number" },
+          "maxUses": { "type": "number" },
+          "temporary": { "type": "boolean" },
+          "unique": { "type": "boolean" },
+          "reason": { "type": "string" }
+        },
+        "required": ["channelId"]
+      }
+    },
+    {
+      "name": "Error Handling - Invalid Parameters",
+      "description": "Test error handling for invalid tool parameters",
+      "type": "error_handling",
+      "tool": "discord_send",
+      "parameters": {
+        "channelId": "invalid",
+        "message": ""
+      },
+      "expectedError": "Invalid channel or message"
+    },
+    {
+      "name": "Error Handling - Missing Required Parameters",
+      "description": "Test error handling for missing required parameters",
+      "type": "error_handling",
+      "tool": "discord_send",
+      "parameters": {
+        "message": "test message"
+      },
+      "expectedError": "Missing required parameter: channelId"
+    },
+    {
+      "name": "Performance Test - Tool Discovery",
+      "description": "Test tool discovery performance",
+      "type": "performance",
+      "operation": "list_tools",
+      "maxDuration": 2000,
+      "iterations": 5
+    },
+    {
+      "name": "Configuration Test - Feature Flags",
+      "description": "Test that feature flags properly filter tools",
+      "type": "configuration",
+      "env": {
+        "ENABLE_USER_MANAGEMENT": "true",
+        "ENABLE_VOICE_CHANNELS": "true"
+      },
+      "expectedToolCount": 82
+    }
+  ],
+  "categories": {
+    "authentication": [
+      "discord_login",
+      "discord_set_token",
+      "discord_validate_token",
+      "discord_login_status",
+      "discord_logout"
+    ],
+    "messaging": [
+      "discord_send",
+      "discord_read_messages",
+      "discord_delete_message"
+    ],
+    "channels": [
+      "discord_create_text_channel",
+      "discord_create_forum_channel",
+      "discord_edit_channel",
+      "discord_delete_channel",
+      "discord_create_channel_under_category",
+      "discord_move_channel_to_category"
+    ],
+    "forums": [
+      "discord_get_forum_channels",
+      "discord_create_forum_post",
+      "discord_get_forum_post",
+      "discord_reply_to_forum",
+      "discord_delete_forum_post"
+    ],
+    "users": [
+      "discord_get_user_info",
+      "discord_get_guild_member",
+      "discord_list_guild_members",
+      "discord_add_role_to_member",
+      "discord_remove_role_from_member",
+      "discord_kick_member",
+      "discord_ban_member",
+      "discord_unban_member",
+      "discord_timeout_member"
+    ],
+    "roles": [
+      "discord_create_role",
+      "discord_edit_role",
+      "discord_delete_role",
+      "discord_list_roles",
+      "discord_get_role_permissions"
+    ],
+    "server": [
+      "discord_get_server_info",
+      "discord_list_servers",
+      "discord_update_server_settings",
+      "discord_update_server_engagement",
+      "discord_update_welcome_screen"
+    ],
+    "reactions": [
+      "discord_add_reaction",
+      "discord_add_multiple_reactions",
+      "discord_remove_reaction"
+    ],
+    "webhooks": [
+      "discord_create_webhook",
+      "discord_send_webhook_message",
+      "discord_edit_webhook",
+      "discord_delete_webhook",
+      "discord_list_webhooks"
+    ],
+    "emojis": [
+      "discord_create_emoji",
+      "discord_delete_emoji",
+      "discord_list_emojis"
+    ],
+    "stickers": [
+      "discord_create_sticker",
+      "discord_delete_sticker",
+      "discord_list_stickers"
+    ],
+    "invites": [
+      "discord_create_invite",
+      "discord_delete_invite",
+      "discord_list_invites"
+    ],
+    "integrations": ["discord_list_integrations", "discord_delete_integration"],
+    "voice": [
+      "discord_create_voice_channel",
+      "discord_delete_voice_channel",
+      "discord_edit_voice_channel",
+      "discord_list_voice_channels",
+      "discord_get_voice_channel_info"
+    ],
+    "direct_messages": [
+      "discord_send_direct_message",
+      "discord_get_direct_messages"
+    ],
+    "soundboard": [
+      "discord_create_soundboard_sound",
+      "discord_delete_soundboard_sound",
+      "discord_list_soundboard_sounds"
+    ]
+  },
+  "reporting": {
+    "outputFormat": "json",
+    "includeTimings": true,
+    "includeSchemaDetails": true,
+    "generateSummary": true
+  }
+}
