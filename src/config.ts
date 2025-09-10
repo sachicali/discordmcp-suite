@@ -45,7 +45,31 @@ export class ConfigManager {
             }
           }
         }
-        return process.env.DISCORD_TOKEN || null;
+
+        // Check environment variable
+        const envToken = process.env.DISCORD_TOKEN;
+        if (envToken) {
+          info(
+            `Discord token found in environment variables (length: ${envToken.length})`,
+          );
+          return envToken;
+        }
+
+        // Log available environment variables for debugging (without sensitive values)
+        const envVars = Object.keys(process.env).filter(
+          (key) =>
+            key.toLowerCase().includes("discord") ||
+            key.toLowerCase().includes("token"),
+        );
+        if (envVars.length > 0) {
+          info(
+            `Available Discord-related environment variables: ${envVars.join(", ")}`,
+          );
+        } else {
+          info("No Discord-related environment variables found");
+        }
+
+        return null;
       })(),
 
       ALLOW_GUILD_IDS: (() => {
