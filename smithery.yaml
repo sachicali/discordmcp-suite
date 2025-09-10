@@ -72,13 +72,13 @@ startCommand:
     BOT_TOKEN: "{{discordToken}}"
     # Debug flag
     DEBUG_TOKEN: "true"
-     # Feature flags - map boolean values to environment variables with explicit string conversion
-     ENABLE_USER_MANAGEMENT: "{{enableUserManagement | toString}}"
-     ENABLE_VOICE_CHANNELS: "{{enableVoiceChannels | toString}}"
-     ENABLE_DIRECT_MESSAGES: "{{enableDirectMessages | toString}}"
-     ENABLE_SERVER_MANAGEMENT: "{{enableServerManagement | toString}}"
-     ENABLE_RBAC: "{{enableRbac | toString}}"
-     ENABLE_CONTENT_MANAGEMENT: "{{enableContentManagement | toString}}"
+    # Feature flags - map boolean values to environment variables with explicit string conversion
+    ENABLE_USER_MANAGEMENT: "{{enableUserManagement | toString}}"
+    ENABLE_VOICE_CHANNELS: "{{enableVoiceChannels | toString}}"
+    ENABLE_DIRECT_MESSAGES: "{{enableDirectMessages | toString}}"
+    ENABLE_SERVER_MANAGEMENT: "{{enableServerManagement | toString}}"
+    ENABLE_RBAC: "{{enableRbac | toString}}"
+    ENABLE_CONTENT_MANAGEMENT: "{{enableContentManagement | toString}}"
     # Security settings
     ALLOW_GUILD_IDS: "{{allowGuildIds}}"
     ALLOW_CHANNEL_IDS: "{{allowChannelIds}}"
