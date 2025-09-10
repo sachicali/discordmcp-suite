@@ -12,18 +12,18 @@ startCommand:
         type: string
         title: "Discord Bot Token"
         description: "Discord bot token. Obtain this from the Discord Developer Portal."
-   exampleConfig:
-     discordToken: YOUR_DISCORD_BOT_TOKEN
-   env:
-     # Primary method - standard template
-     DISCORD_TOKEN: "{{discordToken}}"
-     # Alternative patterns for Smithery.ai compatibility
-     discordToken: "{{discordToken}}"
-     DISCORDTOKEN: "{{discordToken}}"
-     TOKEN: "{{discordToken}}"
-     BOT_TOKEN: "{{discordToken}}"
-     # Debug flag
-     DEBUG_TOKEN: "true"
+  exampleConfig:
+    discordToken: YOUR_DISCORD_BOT_TOKEN
+  env:
+    # Primary method - standard template
+    DISCORD_TOKEN: "{{discordToken}}"
+    # Alternative patterns for Smithery.ai compatibility
+    discordToken: "{{discordToken}}"
+    DISCORDTOKEN: "{{discordToken}}"
+    TOKEN: "{{discordToken}}"
+    BOT_TOKEN: "{{discordToken}}"
+    # Debug flag
+    DEBUG_TOKEN: "true"
 
 build:
   dockerfile: Dockerfile
