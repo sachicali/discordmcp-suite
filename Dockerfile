@@ -14,16 +14,19 @@ WORKDIR /app
 # Copy package files first for better caching
 COPY package.json package-lock.json ./
 
-# Install dependencies without running scripts
-RUN npm ci --only=production --ignore-scripts && \
+# Install all dependencies (including dev dependencies for build)
+RUN npm ci --ignore-scripts && \
     npm cache clean --force
 
 # Copy source code
 COPY . .
 
 # Build the TypeScript code
-RUN npm run build && \
-    npm prune --production
+RUN npm run build
+
+# Remove dev dependencies and clean cache
+RUN npm prune --production && \
+    npm cache clean --force
 
 # Change ownership to non-root user
 RUN chown -R mcpuser:nodejs /app
