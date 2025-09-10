@@ -31,14 +31,25 @@ const autoLogin = async () => {
   const token = config.DISCORD_TOKEN;
 
   if (!token) {
+    info("=== DISCORD CONFIGURATION STATUS ===");
     info(
       "No Discord token configured. Server will start but Discord functionality will be limited.",
     );
-    info(
-      "To enable Discord features, set the DISCORD_TOKEN environment variable or use the discord_login tool.",
+    const availableEnvVars = Object.keys(process.env).filter(
+      (key) =>
+        key.toLowerCase().includes("discord") ||
+        key.toLowerCase().includes("token"),
     );
+    info(`Available environment variables: ${availableEnvVars.join(", ")}`);
+    info("To enable Discord features:");
+    info("  1. Set the DISCORD_TOKEN environment variable");
+    info("  2. Or use the discord_login tool to provide a token");
+    info("  3. Or use discord_set_token tool to configure token");
+    info("=====================================");
     return;
   }
+
+  info(`Discord token configured (length: ${token.length})`);
 
   try {
     info("Attempting to log in to Discord...");
