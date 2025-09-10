@@ -1,3 +1,14 @@
+/**
+ * @fileoverview MCP Discord Server - Main server implementation for Discord management tools
+ * @description This file contains the core DiscordMCPServer class that implements the Model Context Protocol
+ * for Discord server management. It provides 58+ enterprise-level Discord management tools including
+ * channel management, user administration, role-based access control, content moderation, and more.
+ *
+ * @author MCP Discord Server Team
+ * @version 1.0.0
+ * @license MIT
+ */
+
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { Client } from "discord.js";
 import { z } from "zod";
@@ -77,13 +88,38 @@ import {
   getDirectMessagesHandler,
 } from "./tools/tools.js";
 import { MCPTransport } from "./transport.js";
-import { info, error } from "./logger.js";
+import { info } from "./logger.js";
 
+/**
+ * @class DiscordMCPServer
+ * @description Main MCP server class for Discord management operations.
+ * Implements the Model Context Protocol to provide 58+ Discord management tools
+ * including channel management, user administration, role-based access control,
+ * content moderation, and enterprise server management features.
+ *
+ * @example
+ * ```typescript
+ * const client = new Client({ intents: [] });
+ * const transport = new MCPTransport();
+ * const server = new DiscordMCPServer(client, transport);
+ * await server.start();
+ * ```
+ */
 export class DiscordMCPServer {
+  /** @private MCP server instance */
   private server: Server;
+
+  /** @private Tool execution context with Discord client */
   private toolContext: ReturnType<typeof createToolContext>;
+
+  /** @private Interval for periodic client status logging */
   private clientStatusInterval: NodeJS.Timeout | null = null;
 
+  /**
+   * Creates a new Discord MCP server instance
+   * @param client - Discord.js client instance
+   * @param transport - MCP transport layer for communication
+   */
   constructor(
     private client: Client,
     private transport: MCPTransport,
@@ -525,13 +561,13 @@ export class DiscordMCPServer {
           default:
             throw new Error(`Unknown tool: ${name}`);
         }
-      } catch (error) {
-        if (error instanceof z.ZodError) {
+      } catch (err) {
+        if (err instanceof z.ZodError) {
           return {
             content: [
               {
                 type: "text",
-                text: `Invalid arguments: ${error.errors
+                text: `Invalid arguments: ${err.errors
                   .map((e: z.ZodIssue) => `${e.path.join(".")}: ${e.message}`)
                   .join(", ")}`,
               },
@@ -541,7 +577,7 @@ export class DiscordMCPServer {
         }
 
         const errorMessage =
-          error instanceof Error ? error.message : "Unknown error";
+          err instanceof Error ? err.message : "Unknown error";
         return {
           content: [
             { type: "text", text: `Error executing tool: ${errorMessage}` },

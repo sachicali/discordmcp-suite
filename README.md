@@ -1,47 +1,106 @@
 # MCP-Discord
 
-A Discord MCP (Model Context Protocol) server that enables AI assistants to interact with the Discord platform.
+[![Version](https://img.shields.io/badge/version-1.4.0-blue.svg)](https://github.com/sachicali/discordmcp-suite)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
+[![Discord.js](https://img.shields.io/badge/Discord.js-14.19.3-blue.svg)](https://discord.js.org/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/sachicali/discordmcp-suite/blob/main/LICENSE)
+[![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://hub.docker.com/)
+
+A comprehensive Discord MCP (Model Context Protocol) server that enables AI assistants to interact with the Discord platform through **58+ enterprise-level management tools**. Built with TypeScript, featuring advanced security, automated moderation, bulk operations, health monitoring, and production-ready architecture.
 
 ## Overview
 
 MCP-Discord provides comprehensive Discord integration with both basic and advanced features:
 
-### Core Features
+### 🚀 Key Features
 
-- Login to Discord bot
-- Get server information
-- Read/delete channel messages
-- Send messages to specified channels (using either channel IDs or channel names)
-- Retrieve forum channel lists
-- Create/delete/reply to forum posts
-- Create/delete text channels
-- Add/remove message reactions
-- Create/edit/delete/use webhooks
+- **58 Enterprise Tools**: Complete Discord server management suite
+- **Production Ready**: TypeScript, Docker, comprehensive error handling
+- **Security First**: Guild/channel allowlists, permission validation
+- **Multi-Platform**: Works with Claude, Cursor, and other MCP clients
+- **Cloud Optimized**: FastMCP Cloud deployment ready
 
-### Advanced Features ✨
+### 📋 Core Features
 
-- **User Management**: Complete member lifecycle management
+- 🔐 Login to Discord bot
+- 🏰 Get server information
+- 💬 Read/delete/send channel messages
+- 📋 Retrieve forum channel lists
+- 📝 Create/delete/reply to forum posts
+- 📺 Create/delete text channels
+- 😀 Add/remove message reactions
+- 🪝 Create/edit/delete/use webhooks
+
+### ✨ Advanced Features
+
+- **👥 User Management**: Complete member lifecycle management
   - Get user info, manage roles, permissions
   - Kick, ban, unban, and timeout members
   - Role assignment and removal with audit logging
 
-- **Voice Channels**: Full voice channel management
+- **🎤 Voice Channels**: Full voice channel management
   - Create, edit, delete voice channels
   - Configure user limits and bitrate settings
   - Get detailed voice channel information
 
-- **Direct Messages**: Private user communication
+- **💌 Direct Messages**: Private user communication
   - Send DMs to users
   - Retrieve DM history
   - Handle DM conversations
 
-### Key Benefits
+### 🏆 Key Benefits
 
-- **Security First**: Guild/channel allowlists and safe defaults
-- **Comprehensive**: Covers 58+ Discord API endpoints with enterprise-level features
-- **Production Ready**: TypeScript, error handling, and logging
-- **Easy Integration**: Works with Claude, Cursor, and other MCP clients
-- **Enterprise Features**: Full RBAC, server management, and advanced moderation tools
+- **🔒 Security First**: Guild/channel allowlists and safe defaults
+- **📊 Comprehensive**: Covers 58+ Discord API endpoints with enterprise-level features
+- **⚡ Production Ready**: TypeScript, error handling, and logging
+- **🔗 Easy Integration**: Works with Claude, Cursor, and other MCP clients
+- **🏢 Enterprise Features**: Full RBAC, server management, and advanced moderation tools
+
+## ⚡ Quick Start
+
+### 1. Install Dependencies
+
+```bash
+npm install
+```
+
+### 2. Configure Environment
+
+```bash
+# Copy example environment file
+cp .env.example .env
+
+# Edit with your Discord bot token
+DISCORD_TOKEN=your_bot_token_here
+ALLOW_GUILD_IDS=your_guild_id
+```
+
+### 3. Build and Run
+
+```bash
+# Build the project
+npm run build
+
+# Start the server
+npm start
+```
+
+### 4. Use with Claude/Cursor
+
+Add to your MCP configuration:
+
+```json
+{
+  "mcpServers": {
+    "discord": {
+      "command": "node",
+      "args": ["/path/to/mcp-discord/build/index.js", "--config", "your_token"]
+    }
+  }
+}
+```
+
+> **🎯 Pro Tip**: For full functionality, ensure your bot has `Administrator` permissions or the specific permissions listed in the [Prerequisites](#prerequisites) section.
 
 ## Table of Contents
 
@@ -64,13 +123,32 @@ MCP-Discord provides comprehensive Discord integration with both basic and advan
 
 ## Prerequisites
 
-- Node.js (v16.0.0 or higher)
-- npm (v7.0.0 or higher)
-- A Discord bot with appropriate permissions
-  - Bot token (obtainable from the [Discord Developer Portal](https://discord.com/developers/applications))
-  - Message Content Intent enabled
-  - Server Members Intent enabled
-  - Presence Intent enabled
+### System Requirements
+
+- **Node.js**: v18.0.0 or higher (recommended: v20+)
+- **npm**: v7.0.0 or higher
+- **TypeScript**: v5.0.0 or higher (for development)
+
+### Discord Bot Setup
+
+1. **Create a Discord Application**
+   - Visit [Discord Developer Portal](https://discord.com/developers/applications)
+   - Click "New Application" and give it a name
+   - Navigate to the "Bot" section
+
+2. **Configure Bot Permissions**
+   - **Required Intents** (Bot settings):
+     - ✅ Message Content Intent
+     - ✅ Server Members Intent
+     - ✅ Presence Intent
+
+3. **Bot Permissions** (OAuth2 URL Generator):
+   - For basic functionality: `Administrator` (recommended)
+   - For custom permissions: See [Permissions](#permissions-required) section below
+
+4. **Get Bot Token**
+   - In Bot settings, click "Reset Token" to generate a new token
+   - **⚠️ Keep this token secure** - never commit it to version control
 
 ### Permissions Required
 
@@ -1090,6 +1168,136 @@ ENABLE_CONTENT_MANAGEMENT=1
 # Security (recommended)
 ALLOW_GUILD_IDS=your_guild_id_here
 ALLOW_CHANNEL_IDS=your_channel_ids_here
+```
+
+## Troubleshooting
+
+### 🔧 Common Issues & Solutions
+
+#### "Missing Permissions" Error
+
+**Symptoms**: Tool calls fail with permission-related errors
+**Solutions**:
+
+- Ensure bot has `Administrator` permissions (recommended)
+- Or add specific permissions listed in [Prerequisites](#permissions-required)
+- Re-invite bot to server with updated permissions
+
+#### "Unknown Guild" Error
+
+**Symptoms**: Operations fail with "Unknown Guild" message
+**Solutions**:
+
+- Verify `guildId` parameter is correct
+- Ensure bot is added to the target server
+- Check `ALLOW_GUILD_IDS` environment variable if set
+
+#### "Invalid Token" Error
+
+**Symptoms**: Authentication fails during startup
+**Solutions**:
+
+- Verify `DISCORD_TOKEN` is set correctly
+- Check for extra spaces or characters in token
+- Regenerate token in Discord Developer Portal if needed
+
+#### Voice Channel Errors
+
+**Symptoms**: Voice-related tools fail
+**Solutions**:
+
+- Bot needs `Connect`, `Speak`, and `Move Members` permissions
+- Ensure bot is in the voice channel for some operations
+
+#### DM Errors
+
+**Symptoms**: Direct message tools fail
+**Solutions**:
+
+- Bot cannot DM users who have DMs disabled
+- Bot cannot DM users not in a mutual server
+- Ensure bot has `Send Messages` permission in DMs
+
+### 🐛 Debug Mode
+
+Enable detailed logging for troubleshooting:
+
+```bash
+# Set debug environment variable
+DEBUG_TOKEN=true npm start
+
+# Or for development
+npm run dev
+```
+
+### 📊 Health Checks
+
+The server provides health check endpoints:
+
+```bash
+# Check server health
+curl http://localhost:8080/health
+
+# Check server readiness
+curl http://localhost:8080/ready
+```
+
+### 🔍 Environment Variables
+
+Enable specific features and debugging:
+
+```bash
+# Enable debug logging
+DEBUG_TOKEN=true
+
+# Enable specific features
+ENABLE_USER_MANAGEMENT=1
+ENABLE_VOICE_CHANNELS=1
+ENABLE_DIRECT_MESSAGES=1
+ENABLE_SERVER_MANAGEMENT=1
+ENABLE_RBAC=1
+ENABLE_CONTENT_MANAGEMENT=1
+
+# Security (recommended for production)
+ALLOW_GUILD_IDS=your_guild_id_here
+ALLOW_CHANNEL_IDS=your_channel_ids_here
+```
+
+### 📞 Support
+
+- **Issues**: [GitHub Issues](https://github.com/sachicali/discordmcp-suite/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/sachicali/discordmcp-suite/discussions)
+- **Documentation**: [Full API Reference](#tools-documentation)
+
+## Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+### Development Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/sachicali/discordmcp-suite.git
+cd discordmcp-suite
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```
+
+### Testing
+
+```bash
+# Run tests
+npm test
+
+# Run API tests
+npm run test-api
+
+# Validate environment
+npm run validate-env
 ```
 
 ## License
