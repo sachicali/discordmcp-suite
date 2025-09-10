@@ -671,9 +671,13 @@ function getFilteredTools() {
   });
 
   // Filter the tools array based on enabled tools
-  const filteredTools = baseTools.filter((tool) =>
+  let filteredTools = baseTools.filter((tool) =>
     enabledToolNames.has(tool.name),
   );
+
+  // TEMPORARILY LIMIT TOOLS TO TEST IF VOLUME IS THE ISSUE
+  // Comment out this line to restore all tools
+  filteredTools = filteredTools.slice(0, 30);
 
   if (process.env.DEBUG_TOKEN) {
     info(
