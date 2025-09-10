@@ -6,6 +6,8 @@ import { toolList } from "./toolList.js";
 import {
   createToolContext,
   loginHandler,
+  loginStatusHandler,
+  listServersHandler,
   sendMessageHandler,
   getForumChannelsHandler,
   createForumPostHandler,
@@ -399,6 +401,26 @@ export class StreamableHttpTransport implements MCPTransport {
             );
             break;
 
+          case "discord_login_status":
+            result = await loginStatusHandler({}, this.toolContext!);
+            break;
+
+          case "discord_list_servers":
+            // Check if client is logged in
+            if (!this.toolContext!.client.isReady()) {
+              return res.json({
+                jsonrpc: "2.0",
+                error: {
+                  code: -32603,
+                  message:
+                    "Discord client not logged in. Please use discord_login tool first.",
+                },
+                id: req.body?.id || null,
+              });
+            }
+            result = await listServersHandler({}, this.toolContext!);
+            break;
+
           // Make sure Discord client is logged in for other Discord API tools
           // but return a proper JSON-RPC error rather than throwing an exception
           case "discord_send":
@@ -680,6 +702,14 @@ export class StreamableHttpTransport implements MCPTransport {
                       : null,
                   })}`,
                 );
+                break;
+
+              case "discord_login_status":
+                result = await loginStatusHandler(toolArgs, this.toolContext!);
+                break;
+
+              case "discord_list_servers":
+                result = await listServersHandler(toolArgs, this.toolContext!);
                 break;
 
               case "discord_send":
