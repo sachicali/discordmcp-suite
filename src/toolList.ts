@@ -708,7 +708,6 @@ const voiceChannelTools = [
   "discord_edit_voice_channel",
   "discord_list_voice_channels",
   "discord_get_voice_channel_info",
-  "discord_move_user_to_voice_channel",
 ];
 
 // Direct Message Tools (can be disabled via ENABLE_DIRECT_MESSAGES=false)

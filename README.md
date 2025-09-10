@@ -7,7 +7,7 @@
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/sachicali/discordmcp-suite/blob/main/LICENSE)
 [![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://hub.docker.com/)
 
-A comprehensive Discord MCP (Model Context Protocol) server that enables AI assistants to interact with the Discord platform through **73 enterprise-level management tools**. Built with TypeScript, featuring advanced security, automated moderation, bulk operations, health monitoring, and production-ready architecture.
+Discord MCP server with 70+ tools for community management
 
 _Latest version: v2.3.0 - Now with enhanced Docker support and security fixes!_
 _Workflow triggered: September 10, 2025_
@@ -134,7 +134,7 @@ MCP-Discord provides comprehensive Discord integration with both basic and advan
 ### 🏆 Key Benefits
 
 - **🔒 Security First**: Guild/channel allowlists and safe defaults
-- **📊 Comprehensive**: Covers 73 Discord API endpoints with enterprise-level features
+- **📊 Comprehensive**: Covers 70+ Discord API endpoints with advanced features
 - **⚡ Production Ready**: TypeScript, error handling, and logging
 - **🔗 Easy Integration**: Works with Claude, Cursor, and other MCP clients
 - **🏢 Enterprise Features**: Full RBAC, server management, and advanced moderation tools

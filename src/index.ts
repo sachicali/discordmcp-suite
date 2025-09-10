@@ -4,7 +4,7 @@
  * MCP Discord Server - Main Entry Point
  *
  * This is the main entry point for the MCP Discord server that provides
- * comprehensive Discord integration through 58+ enterprise-level management tools.
+ * Discord MCP server with 70+ tools for community management
  *
  * Features:
  * - Discord bot authentication and management

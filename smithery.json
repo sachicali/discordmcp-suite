@@ -1,6 +1,6 @@
 {
   "name": "Discord MCP Server",
-  "description": "Discord MCP server with 70+ tools for community management, moderation, and automation",
+  "description": "Discord MCP server with 70+ tools for community management",
   "version": "2.3.0",
   "server": {
     "command": "node",

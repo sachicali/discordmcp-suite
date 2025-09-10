@@ -1,22 +1,40 @@
 {
-  "name": "Discord MCP Server - Quick Test",
-  "description": "Quick validation test for Discord MCP server tool discovery",
+  "name": "Discord MCP Server Test Suite",
+  "description": "Comprehensive test suite for Discord MCP server with 70+ tools",
   "version": "1.0.0",
+  "server": {
+    "command": "node",
+    "args": ["build/fast-start.js"],
+    "env": {
+      "DEBUG_TOKEN": "true",
+      "ENABLE_USER_MANAGEMENT": "true",
+      "ENABLE_VOICE_CHANNELS": "true",
+      "ENABLE_DIRECT_MESSAGES": "true",
+      "ENABLE_SERVER_MANAGEMENT": "true",
+      "ENABLE_RBAC": "true",
+      "ENABLE_CONTENT_MANAGEMENT": "true"
+    }
+  },
   "tests": [
     {
-      "name": "Health Check",
+      "name": "Server Health Check",
+      "description": "Verify server starts and health endpoint responds",
       "type": "health",
       "endpoint": "/health",
-      "expectedStatus": 200
+      "expectedStatus": 200,
+      "timeout": 5000
     },
     {
-      "name": "Tool Count Validation",
+      "name": "Tool Discovery",
+      "description": "Verify all 70 tools are discovered with valid schemas",
       "type": "tool_discovery",
       "expectedToolCount": 70,
-      "validateSchemas": true
+      "validateSchemas": true,
+      "schemaChecks": ["hasType", "hasValidProperties", "hasValidRequired"]
     },
     {
-      "name": "Schema Structure Test",
+      "name": "Schema Validation - Send Message",
+      "description": "Validate discord_send tool schema structure",
       "type": "schema_validation",
       "tool": "discord_send",
       "expectedSchema": {

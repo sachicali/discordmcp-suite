@@ -1,7 +1,7 @@
 # Smithery configuration file: https://smithery.ai/docs/build/project-config/smithery.yaml
 
 version: 2
-description: "Discord MCP server with 70+ tools for community management, moderation, and automation"
+description: "Discord MCP server with 70+ tools for community management"
 runtime: "container"
 startCommand:
   type: "http"
@@ -85,6 +85,9 @@ startCommand:
     # Security settings
     ALLOW_GUILD_IDS: "{{allowGuildIds}}"
     ALLOW_CHANNEL_IDS: "{{allowChannelIds}}"
+
+test:
+  config: ".smithery/test.json"
 
 build:
   dockerfile: Dockerfile

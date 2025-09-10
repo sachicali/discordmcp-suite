@@ -1,7 +1,7 @@
 {
   "name": "discordmcp-suite",
   "version": "2.3.0",
-  "description": "Discord MCP server with 70+ tools for community management, moderation, and automation",
+  "description": "Discord MCP server with 70+ tools for community management",
   "main": "build/index.js",
   "bin": {
     "discordmcp-suite": "build/index.js"

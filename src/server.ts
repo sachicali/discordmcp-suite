@@ -1,7 +1,7 @@
 /**
  * @fileoverview MCP Discord Server - Main server implementation for Discord management tools
  * @description This file contains the core DiscordMCPServer class that implements the Model Context Protocol
- * for Discord server management. It provides 58+ enterprise-level Discord management tools including
+ * for Discord server management. It provides 70+ Discord management tools including
  * channel management, user administration, role-based access control, content moderation, and more.
  *
  * @author MCP Discord Server Team
@@ -16,11 +16,7 @@ import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
-import {
-  toolList,
-  getPaginatedTools,
-  type PaginatedTools,
-} from "./toolList.js";
+import { toolList } from "./toolList.js";
 import {
   createToolContext,
   loginHandler,
@@ -90,6 +86,11 @@ import {
   listWebhooksHandler,
   sendDirectMessageHandler,
   getDirectMessagesHandler,
+  createVoiceChannelHandler,
+  deleteVoiceChannelHandler,
+  editVoiceChannelHandler,
+  listVoiceChannelsHandler,
+  getVoiceChannelInfoHandler,
 } from "./tools/tools.js";
 import { MCPTransport } from "./transport.js";
 import { info } from "./logger.js";
@@ -145,21 +146,11 @@ export class DiscordMCPServer {
   }
 
   private setupHandlers() {
-    // Set up the tool list with pagination support
-    this.server.setRequestHandler(ListToolsRequestSchema, async (request) => {
-      // Extract pagination parameters from the request if available
-      const params = request.params || {};
-      const page = typeof params.page === "number" ? params.page : 1;
-      const limit =
-        typeof params.limit === "number" ? Math.min(params.limit, 100) : 50; // Max 100 tools per page
-
-      const paginatedResult = getPaginatedTools({ page, limit });
-
-      // Return paginated response with metadata
+    // Set up the tool list handler
+    this.server.setRequestHandler(ListToolsRequestSchema, async () => {
+      // For Smithery compatibility, return all tools without pagination
       return {
-        tools: paginatedResult.tools,
-        // Include pagination metadata for clients that support it
-        _pagination: paginatedResult.pagination,
+        tools: toolList,
       };
     });
 
@@ -568,6 +559,48 @@ export class DiscordMCPServer {
               "before discord_list_soundboard_sounds handler",
             );
             toolResponse = await listSoundboardSoundsHandler(
+              args,
+              this.toolContext,
+            );
+            return toolResponse;
+
+          case "discord_create_voice_channel":
+            this.logClientState("before discord_create_voice_channel handler");
+            toolResponse = await createVoiceChannelHandler(
+              args,
+              this.toolContext,
+            );
+            return toolResponse;
+
+          case "discord_delete_voice_channel":
+            this.logClientState("before discord_delete_voice_channel handler");
+            toolResponse = await deleteVoiceChannelHandler(
+              args,
+              this.toolContext,
+            );
+            return toolResponse;
+
+          case "discord_edit_voice_channel":
+            this.logClientState("before discord_edit_voice_channel handler");
+            toolResponse = await editVoiceChannelHandler(
+              args,
+              this.toolContext,
+            );
+            return toolResponse;
+
+          case "discord_list_voice_channels":
+            this.logClientState("before discord_list_voice_channels handler");
+            toolResponse = await listVoiceChannelsHandler(
+              args,
+              this.toolContext,
+            );
+            return toolResponse;
+
+          case "discord_get_voice_channel_info":
+            this.logClientState(
+              "before discord_get_voice_channel_info handler",
+            );
+            toolResponse = await getVoiceChannelInfoHandler(
               args,
               this.toolContext,
             );

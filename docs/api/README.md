@@ -2,7 +2,7 @@
 
 ## Overview
 
-The MCP Discord Server provides 58+ enterprise-level Discord management tools through the Model Context Protocol (MCP). This comprehensive API enables complete Discord server administration, user management, content moderation, and automation.
+Discord MCP server with 70+ tools for community management
 
 ## Quick Start
 
