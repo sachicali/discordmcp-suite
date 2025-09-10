@@ -46,7 +46,7 @@ export class ConfigManager {
           }
         }
 
-        // Check environment variable
+        // Check environment variable (primary method)
         const envToken = process.env.DISCORD_TOKEN;
         if (envToken) {
           info(
@@ -55,17 +55,38 @@ export class ConfigManager {
           return envToken;
         }
 
+        // Check for Smithery.ai configuration parameters (fallback)
+        // Smithery.ai might pass config as different environment variables
+        const smitheryToken =
+          process.env.discordToken ||
+          process.env.DISCORDTOKEN ||
+          process.env.token;
+        if (smitheryToken) {
+          info(
+            `Discord token found via Smithery.ai config (length: ${smitheryToken.length})`,
+          );
+          return smitheryToken;
+        }
+
         // Log available environment variables for debugging (without sensitive values)
         const envVars = Object.keys(process.env).filter(
           (key) =>
             key.toLowerCase().includes("discord") ||
-            key.toLowerCase().includes("token") ||
-            key.toLowerCase().includes("debug"),
+            key.toLowerCase().includes("token"),
         );
         if (envVars.length > 0) {
           info(
             `Available Discord-related environment variables: ${envVars.join(", ")}`,
           );
+          // Log the values (masked) for debugging
+          envVars.forEach((key) => {
+            const value = process.env[key];
+            if (value) {
+              const masked =
+                value.length > 10 ? value.substring(0, 10) + "..." : value;
+              info(`  ${key}: ${masked} (length: ${value.length})`);
+            }
+          });
         } else {
           info("No Discord-related environment variables found");
         }

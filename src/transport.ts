@@ -254,6 +254,16 @@ export class StreamableHttpTransport implements MCPTransport {
             );
             info(`DEBUG_TOKEN present: ${!!process.env.DEBUG_TOKEN}`);
             info(`DEBUG_TOKEN value: ${process.env.DEBUG_TOKEN}`);
+            info(`discordToken present: ${!!process.env.discordToken}`);
+            info(
+              `discordToken length: ${process.env.discordToken?.length || 0}`,
+            );
+            info(`DISCORDTOKEN present: ${!!process.env.DISCORDTOKEN}`);
+            info(
+              `DISCORDTOKEN length: ${process.env.DISCORDTOKEN?.length || 0}`,
+            );
+            info(`token present: ${!!process.env.token}`);
+            info(`token length: ${process.env.token?.length || 0}`);
             info(
               `All env vars with 'discord' or 'token': ${Object.keys(
                 process.env,
@@ -300,6 +310,16 @@ export class StreamableHttpTransport implements MCPTransport {
               `DISCORD_TOKEN length: ${process.env.DISCORD_TOKEN?.length || 0}`,
             );
             info(`DEBUG_TOKEN present: ${!!process.env.DEBUG_TOKEN}`);
+            info(`discordToken present: ${!!process.env.discordToken}`);
+            info(
+              `discordToken length: ${process.env.discordToken?.length || 0}`,
+            );
+            info(`DISCORDTOKEN present: ${!!process.env.DISCORDTOKEN}`);
+            info(
+              `DISCORDTOKEN length: ${process.env.DISCORDTOKEN?.length || 0}`,
+            );
+            info(`token present: ${!!process.env.token}`);
+            info(`token length: ${process.env.token?.length || 0}`);
             info("=== END TOOLS LIST LOG ===");
 
             result = { tools: toolList };
@@ -318,6 +338,20 @@ export class StreamableHttpTransport implements MCPTransport {
             info(
               `Environment DISCORD_TOKEN length: ${process.env.DISCORD_TOKEN?.length || 0}`,
             );
+            info(
+              `Environment discordToken present: ${!!process.env.discordToken}`,
+            );
+            info(
+              `Environment discordToken length: ${process.env.discordToken?.length || 0}`,
+            );
+            info(
+              `Environment DISCORDTOKEN present: ${!!process.env.DISCORDTOKEN}`,
+            );
+            info(
+              `Environment DISCORDTOKEN length: ${process.env.DISCORDTOKEN?.length || 0}`,
+            );
+            info(`Environment token present: ${!!process.env.token}`);
+            info(`Environment token length: ${process.env.token?.length || 0}`);
             info(`Client token present: ${!!this.toolContext!.client.token}`);
             info(
               `Client token length: ${this.toolContext!.client.token?.length || 0}`,
