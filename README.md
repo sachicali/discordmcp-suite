@@ -1,12 +1,13 @@
 # MCP-Discord
 
+[![smithery badge](https://smithery.ai/badge/@sachicali/discordmcp-suite)](https://smithery.ai/server/@sachicali/discordmcp-suite)
 [![Version](https://img.shields.io/badge/version-1.4.0-blue.svg)](https://github.com/sachicali/discordmcp-suite)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
 [![Discord.js](https://img.shields.io/badge/Discord.js-14.19.3-blue.svg)](https://discord.js.org/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/sachicali/discordmcp-suite/blob/main/LICENSE)
 [![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://hub.docker.com/)
 
-A comprehensive Discord MCP (Model Context Protocol) server that enables AI assistants to interact with the Discord platform through **58+ enterprise-level management tools**. Built with TypeScript, featuring advanced security, automated moderation, bulk operations, health monitoring, and production-ready architecture.
+A comprehensive Discord MCP (Model Context Protocol) server that enables AI assistants to interact with the Discord platform through **73 enterprise-level management tools**. Built with TypeScript, featuring advanced security, automated moderation, bulk operations, health monitoring, and production-ready architecture.
 
 ## Overview
 
@@ -14,11 +15,11 @@ MCP-Discord provides comprehensive Discord integration with both basic and advan
 
 ### 🚀 Key Features
 
-- **58 Enterprise Tools**: Complete Discord server management suite
+- **73 Enterprise Tools**: Complete Discord server management suite
 - **Production Ready**: TypeScript, Docker, comprehensive error handling
 - **Security First**: Guild/channel allowlists, permission validation
 - **Multi-Platform**: Works with Claude, Cursor, and other MCP clients
-- **Cloud Optimized**: FastMCP Cloud deployment ready
+- **Cloud Optimized**: Docker deployment ready
 
 ### 📋 Core Features
 
@@ -30,6 +31,85 @@ MCP-Discord provides comprehensive Discord integration with both basic and advan
 - 📺 Create/delete text channels
 - 😀 Add/remove message reactions
 - 🪝 Create/edit/delete/use webhooks
+
+## 📋 Complete Tool Reference
+
+| Category                            | Tool Name                                  | Description                                                                | Display Name                    |
+| ----------------------------------- | ------------------------------------------ | -------------------------------------------------------------------------- | ------------------------------- |
+| **Login Management**                | `discord_login`                            | Logs in to Discord using the configured token                              | 🔐 Discord Login                |
+|                                     | `discord_set_token`                        | Sets and saves a Discord bot token for authentication                      | 🔑 Set Discord Token            |
+|                                     | `discord_validate_token`                   | Validates the format and basic structure of a Discord token                | ✅ Validate Token               |
+|                                     | `discord_login_status`                     | Shows current login status, configuration, and health information          | 📊 Login Status                 |
+|                                     | `discord_logout`                           | Logs out from Discord and disconnects the client                           | 🚪 Discord Logout               |
+|                                     | `discord_update_config`                    | Updates server configuration settings at runtime                           | ⚙️ Update Config                |
+|                                     | `discord_health_check`                     | Performs a comprehensive health check of the Discord MCP server            | 🩺 Health Check                 |
+| **Basic Functions**                 | `discord_send`                             | Sends a message to a specified Discord text channel                        | 💬 Send Message                 |
+|                                     | `discord_get_server_info`                  | Retrieves detailed information about a Discord server                      | 🏰 Get Server Info              |
+|                                     | `discord_list_servers`                     | Lists all Discord servers that the bot has access to                       | 🏰 List Servers                 |
+| **Channel Management**              | `discord_create_text_channel`              | Creates a new text channel in a Discord server                             | 💬 Create Text Channel          |
+|                                     | `discord_create_forum_channel`             | Creates a new forum channel in a Discord server                            | 📋 Create Forum Channel         |
+|                                     | `discord_create_voice_channel`             | Creates a new voice channel in a Discord server                            | 🎤➕ Create Voice Channel       |
+|                                     | `discord_create_category`                  | Creates a new category in a Discord server                                 | 📁 Create Category              |
+|                                     | `discord_edit_channel`                     | Edits an existing Discord channel (name, topic, category)                  | ✏️ Edit Channel                 |
+|                                     | `discord_edit_category`                    | Edits an existing Discord category (name and position)                     | ✏️ Edit Category                |
+|                                     | `discord_edit_voice_channel`               | Edits an existing voice channel's properties                               | 🎤✏️ Edit Voice Channel         |
+|                                     | `discord_delete_channel`                   | Deletes a Discord channel with an optional reason                          | 🗑️ Delete Channel               |
+|                                     | `discord_delete_category`                  | Deletes a Discord category by ID                                           | 🗑️ Delete Category              |
+|                                     | `discord_delete_voice_channel`             | Deletes a voice channel from the Discord server                            | 🎤🗑️ Delete Voice Channel       |
+|                                     | `discord_create_channel_under_category`    | Creates a new channel and places it under a specific category              | 📁➕ Create Channel in Category |
+|                                     | `discord_move_channel_to_category`         | Moves an existing channel to a different category                          | 📁↔️ Move Channel to Category   |
+|                                     | `discord_list_voice_channels`              | Lists all voice channels in a Discord server                               | 🎤📋 List Voice Channels        |
+|                                     | `discord_get_voice_channel_info`           | Gets detailed information about a specific voice channel                   | 🎤ℹ️ Get Voice Channel Info     |
+|                                     | `discord_move_user_to_voice_channel`       | Moves a user to a different voice channel                                  | 🎤↔️ Move User to Voice Channel |
+| **Forum Functions**                 | `discord_get_forum_channels`               | Lists all forum channels in a specified Discord server                     | 📋 List Forum Channels          |
+|                                     | `discord_create_forum_post`                | Creates a new post in a Discord forum channel with optional tags           | 📝 Create Forum Post            |
+|                                     | `discord_get_forum_post`                   | Retrieves details about a forum post including its messages                | 📖 Get Forum Post               |
+|                                     | `discord_reply_to_forum`                   | Adds a reply to an existing forum post or thread                           | 💬 Reply to Forum               |
+|                                     | `discord_delete_forum_post`                | Deletes a forum post or thread with an optional reason                     | 🗑️ Delete Forum Post            |
+| **Messages and Reactions**          | `discord_read_messages`                    | Retrieves messages from a Discord text channel with a configurable limit   | 📖 Read Messages                |
+|                                     | `discord_add_reaction`                     | Adds an emoji reaction to a specific Discord message                       | 😀 Add Reaction                 |
+|                                     | `discord_add_multiple_reactions`           | Adds multiple emoji reactions to a Discord message at once                 | 😀✨ Add Multiple Reactions     |
+|                                     | `discord_remove_reaction`                  | Removes a specific emoji reaction from a Discord message                   | 🚫 Remove Reaction              |
+|                                     | `discord_delete_message`                   | Deletes a specific message from a Discord text channel                     | 🗑️ Delete Message               |
+| **Webhook Management**              | `discord_create_webhook`                   | Creates a new webhook for a Discord channel                                | 🪝 Create Webhook               |
+|                                     | `discord_send_webhook_message`             | Sends a message to a Discord channel using a webhook                       | 🪝💬 Send Webhook Message       |
+|                                     | `discord_edit_webhook`                     | Edits an existing webhook for a Discord channel                            | 🪝✏️ Edit Webhook               |
+|                                     | `discord_delete_webhook`                   | Deletes an existing webhook for a Discord channel                          | 🪝🗑️ Delete Webhook             |
+|                                     | `discord_list_webhooks`                    | Lists all webhooks for a Discord server or specific channel                | 🪝📋 List Webhooks              |
+| **Server Management**               | `discord_update_server_settings`           | Updates various server settings like name, description, icon, etc.         | 🏰⚙️ Update Server Settings     |
+|                                     | `discord_update_server_engagement`         | Updates server engagement settings like system messages and rules          | 🏰🎯 Update Server Engagement   |
+|                                     | `discord_update_welcome_screen`            | Updates the server's welcome screen settings                               | 🏰🎉 Update Welcome Screen      |
+|                                     | `discord_create_emoji`                     | Creates a new emoji for the server                                         | 😀➕ Create Emoji               |
+|                                     | `discord_delete_emoji`                     | Deletes an emoji from the server                                           | 😀🗑️ Delete Emoji               |
+|                                     | `discord_list_emojis`                      | Lists all emojis in the server                                             | 😀📋 List Emojis                |
+|                                     | `discord_create_sticker`                   | Creates a new sticker for the server                                       | 🏷️➕ Create Sticker             |
+|                                     | `discord_delete_sticker`                   | Deletes a sticker from the server                                          | 🏷️🗑️ Delete Sticker             |
+|                                     | `discord_list_stickers`                    | Lists all stickers in the server                                           | 🏷️📋 List Stickers              |
+|                                     | `discord_create_soundboard_sound`          | Creates a soundboard sound (not yet supported by Discord.js)               | 🔊➕ Create Soundboard Sound    |
+|                                     | `discord_delete_soundboard_sound`          | Deletes a soundboard sound (not yet supported by Discord.js)               | 🔊🗑️ Delete Soundboard Sound    |
+|                                     | `discord_list_soundboard_sounds`           | Lists all soundboard sounds (not yet supported by Discord.js)              | 🔊📋 List Soundboard Sounds     |
+| **Role-Based Access Control**       | `discord_create_role`                      | Creates a new role in a Discord server with specified permissions          | 🏷️ Create Role                  |
+|                                     | `discord_edit_role`                        | Edits an existing role's properties and permissions                        | 🏷️✏️ Edit Role                  |
+|                                     | `discord_delete_role`                      | Deletes a role from the Discord server                                     | 🏷️🗑️ Delete Role                |
+|                                     | `discord_list_roles`                       | Lists all roles in a Discord server with their properties                  | 🏷️📋 List Roles                 |
+|                                     | `discord_get_role_permissions`             | Gets the permissions for a specific role                                   | 🏷️🔍 Get Role Permissions       |
+|                                     | `discord_add_role_to_member`               | Adds a role to a guild member                                              | 🏷️➕ Add Role to Member         |
+|                                     | `discord_remove_role_from_member`          | Removes a role from a guild member                                         | 🏷️➖ Remove Role from Member    |
+| **Content Management**              | _See Messages and Reactions section above_ |                                                                            |                                 |
+| **Invite & Integration Management** | `discord_create_invite`                    | Creates an invite for a channel                                            | 🔗 Create Invite                |
+|                                     | `discord_delete_invite`                    | Deletes an invite by code                                                  | 🔗🗑️ Delete Invite              |
+|                                     | `discord_list_invites`                     | Lists all invites for the server                                           | 🔗📋 List Invites               |
+|                                     | `discord_list_integrations`                | Lists all integrations for the server                                      | 🔌📋 List Integrations          |
+|                                     | `discord_delete_integration`               | Deletes an integration from the server                                     | 🔌🗑️ Delete Integration         |
+| **User Management**                 | `discord_get_user_info`                    | Retrieves information about a Discord user                                 | 👤 Get User Info                |
+|                                     | `discord_get_guild_member`                 | Retrieves information about a guild member including roles and permissions | 👥 Get Guild Member             |
+|                                     | `discord_list_guild_members`               | Lists all members in a Discord server                                      | 👥📋 List Guild Members         |
+|                                     | `discord_kick_member`                      | Kicks a member from the Discord server                                     | 👢 Kick Member                  |
+|                                     | `discord_ban_member`                       | Bans a member from the Discord server                                      | 🔨 Ban Member                   |
+|                                     | `discord_unban_member`                     | Unbans a user from the Discord server                                      | 🔓 Unban Member                 |
+|                                     | `discord_timeout_member`                   | Times out or removes timeout from a guild member                           | ⏰ Timeout Member               |
+| **Direct Messages**                 | `discord_send_direct_message`              | Sends a direct message to a Discord user                                   | 📧 Send Direct Message          |
+|                                     | `discord_get_direct_messages`              | Retrieves direct message history with a specific user                      | 📧📖 Get Direct Messages        |
 
 ### ✨ Advanced Features
 
@@ -51,7 +131,7 @@ MCP-Discord provides comprehensive Discord integration with both basic and advan
 ### 🏆 Key Benefits
 
 - **🔒 Security First**: Guild/channel allowlists and safe defaults
-- **📊 Comprehensive**: Covers 58+ Discord API endpoints with enterprise-level features
+- **📊 Comprehensive**: Covers 73 Discord API endpoints with enterprise-level features
 - **⚡ Production Ready**: TypeScript, error handling, and logging
 - **🔗 Easy Integration**: Works with Claude, Cursor, and other MCP clients
 - **🏢 Enterprise Features**: Full RBAC, server management, and advanced moderation tools
@@ -61,7 +141,7 @@ MCP-Discord provides comprehensive Discord integration with both basic and advan
 ### 1. Install Dependencies
 
 ```bash
-npm install
+bun install
 ```
 
 ### 2. Configure Environment
@@ -79,10 +159,10 @@ ALLOW_GUILD_IDS=your_guild_id
 
 ```bash
 # Build the project
-npm run build
+bun run build
 
 # Start the server
-npm start
+bun run start
 ```
 
 ### 4. Use with Claude/Cursor
@@ -126,7 +206,7 @@ Add to your MCP configuration:
 ### System Requirements
 
 - **Node.js**: v18.0.0 or higher (recommended: v20+)
-- **npm**: v7.0.0 or higher
+- **Bun**: Latest stable version
 - **TypeScript**: v5.0.0 or higher (for development)
 
 ### Discord Bot Setup
@@ -221,7 +301,33 @@ For **Advanced Moderation** (Newly Added):
 1. **Install dependencies:**
 
 ```bash
-npm install
+bun install
+```
+
+2. **Build the project:**
+
+```bash
+bun run build
+```
+
+3. **Configure your bot:**
+
+```bash
+# Create .env file
+cp .env.example .env
+
+# Edit .env with your bot token
+DISCORD_TOKEN=your_discord_bot_token_here
+ALLOW_GUILD_IDS=your_guild_id
+ENABLE_USER_MANAGEMENT=1
+ENABLE_VOICE_CHANNELS=1
+ENABLE_DIRECT_MESSAGES=1
+```
+
+4. **Run the server:**
+
+```bash
+bun run start
 ```
 
 2. **Build the project:**
@@ -294,13 +400,13 @@ git clone https://github.com/sachicali/discordmcp-suite.git
 cd discordmcp-suite
 
 # Install dependencies
-npm install
+bun install
 
 # Compile TypeScript
-npm run build
+bun run build
 
 # Optional: Validate environment variables
-npm run validate-env
+bun run validate-env
 ```
 
 ### Docker Compose (Recommended for Development)
@@ -318,9 +424,9 @@ curl http://localhost:8080/health
 
 ### Cloud Deployment
 
-#### FastMCP Cloud
+#### Cloud Deployment
 
-The service is optimized for FastMCP Cloud deployment with:
+The service is optimized for cloud deployment with:
 
 - ✅ Health checks (`/health`, `/ready`)
 - ✅ Environment validation
@@ -655,7 +761,7 @@ You can use Docker containers with both Claude and Cursor. For full functionalit
 
 ## Tools Documentation
 
-### Login Management (New)
+### Login Management
 
 - `discord_login`: Logs in to Discord using configured token
 - `discord_set_token`: Sets and saves a Discord bot token for authentication
@@ -669,11 +775,25 @@ You can use Docker containers with both Claude and Cursor. For full functionalit
 
 - `discord_send`: Send a message to a specified channel (supports both channel ID and channel name)
 - `discord_get_server_info`: Get Discord server information
+- `discord_list_servers`: Lists all Discord servers that the bot has access to
 
 ### Channel Management
 
 - `discord_create_text_channel`: Create a text channel
+- `discord_create_forum_channel`: Create a forum channel
+- `discord_create_voice_channel`: Create a voice channel
+- `discord_create_category`: Create a category
+- `discord_edit_channel`: Edit channel properties
+- `discord_edit_category`: Edit category properties
+- `discord_edit_voice_channel`: Edit voice channel properties
 - `discord_delete_channel`: Delete a channel
+- `discord_delete_category`: Delete a category
+- `discord_delete_voice_channel`: Delete a voice channel
+- `discord_create_channel_under_category`: Create channel in specific category
+- `discord_move_channel_to_category`: Move channel to different category
+- `discord_list_voice_channels`: List all voice channels
+- `discord_get_voice_channel_info`: Get voice channel details
+- `discord_move_user_to_voice_channel`: Move user between voice channels
 
 ### Forum Functions
 
@@ -697,13 +817,13 @@ You can use Docker containers with both Claude and Cursor. For full functionalit
 - `discord_send_webhook_message`: Sends a message to a Discord channel using a webhook
 - `discord_edit_webhook`: Edits an existing webhook for a Discord channel
 - `discord_delete_webhook`: Deletes an existing webhook for a Discord channel
+- `discord_list_webhooks`: Lists all webhooks for a Discord server or specific channel
 
 ### Server Management
 
 - `discord_get_server_info`: Get comprehensive Discord server information
 - `discord_update_server_settings`: Update server settings (name, description, icon, banner, features)
-- `discord_get_server_features`: Get server features and capabilities
-- `discord_get_welcome_screen`: Get server welcome screen configuration
+- `discord_update_server_engagement`: Update server engagement settings (system messages, rules)
 - `discord_update_welcome_screen`: Update server welcome screen
 - `discord_list_emojis`: List all server emojis
 - `discord_create_emoji`: Create a new server emoji
@@ -740,8 +860,6 @@ You can use Docker containers with both Claude and Cursor. For full functionalit
 - `discord_create_invite`: Create a new server invite
 - `discord_delete_invite`: Delete a server invite
 - `discord_list_integrations`: List server integrations
-- `discord_create_integration`: Create a new server integration
-- `discord_edit_integration`: Edit existing integration
 - `discord_delete_integration`: Delete a server integration
 
 ## Advanced Features
@@ -753,8 +871,6 @@ You can use Docker containers with both Claude and Cursor. For full functionalit
 - `discord_get_user_info`: Get detailed information about a Discord user
 - `discord_get_guild_member`: Get member info including roles and permissions
 - `discord_list_guild_members`: List all members in a server
-- `discord_add_role_to_member`: Add a role to a member (with audit reason)
-- `discord_remove_role_from_member`: Remove a role from a member (with audit reason)
 - `discord_kick_member`: Kick a member from the server (with reason)
 - `discord_ban_member`: Ban a member (optionally delete message history)
 - `discord_unban_member`: Unban a previously banned user
@@ -777,7 +893,7 @@ You can use Docker containers with both Claude and Cursor. For full functionalit
 - `discord_send_direct_message`: Send a direct message to a user
 - `discord_get_direct_messages`: Retrieve DM history with a user (paginated)
 
-### Server Management (New)
+### Server Management
 
 **Prerequisites:** Bot needs `Manage Emojis and Stickers`, `Manage Guild`, `View Audit Log`, `Manage Events`, `Create Instant Invite`, `Manage Invites`, `Manage Integrations`, `Manage Soundboard` permissions.
 
@@ -820,8 +936,6 @@ You can use Docker containers with both Claude and Cursor. For full functionalit
 - `discord_get_user_info`: Get detailed information about a Discord user
 - `discord_get_guild_member`: Get member info including roles and permissions
 - `discord_list_guild_members`: List all members in a server
-- `discord_add_role_to_member`: Add a role to a member (with audit reason)
-- `discord_remove_role_from_member`: Remove a role from a member (with audit reason)
 - `discord_kick_member`: Kick a member from the server (with reason)
 - `discord_ban_member`: Ban a member (optionally delete message history)
 - `discord_unban_member`: Unban a previously banned user
@@ -938,6 +1052,20 @@ You can use Docker containers with both Claude and Cursor. For full functionalit
   "tool": "discord_get_voice_channel_info",
   "input": {
     "channelId": "111222333444555666"
+  }
+}
+```
+
+#### Move User to Voice Channel
+
+```json
+{
+  "tool": "discord_move_user_to_voice_channel",
+  "input": {
+    "guildId": "987654321098765432",
+    "userId": "123456789012345678",
+    "channelId": "111222333444555666",
+    "reason": "Moving user to gaming voice channel"
   }
 }
 ```
@@ -1118,13 +1246,13 @@ You can use Docker containers with both Claude and Cursor. For full functionalit
 
 ```bash
 # Development mode
-npm run dev
+bun run dev
 
 # Build for production
-npm run build
+bun run build
 
 # Run production build
-npm start
+bun run start
 ```
 
 ## Troubleshooting
@@ -1291,13 +1419,13 @@ npm run dev
 
 ```bash
 # Run tests
-npm test
+bun run test
 
 # Run API tests
-npm run test-api
+bun run test-api
 
 # Validate environment
-npm run validate-env
+bun run validate-env
 ```
 
 ## License
