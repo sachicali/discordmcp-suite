@@ -495,13 +495,25 @@ export const healthCheckHandler: ToolHandler = async (args, context) => {
     healthReport += "\n**Recommendations:**\n";
     if (!config.DISCORD_TOKEN) {
       healthReport +=
-        "- Set DISCORD_TOKEN environment variable or use discord_set_token\n";
+        "- Set DISCORD_TOKEN environment variable or use discord_set_token to enable Discord features\n";
+      healthReport +=
+        "- Server is fully operational for MCP operations without Discord token\n";
     }
     if (healthStatus.status === "degraded") {
       healthReport += "- Review configuration settings\n";
     }
     if (healthStatus.status === "healthy") {
       healthReport += "- All systems operational ✅\n";
+    }
+
+    // Add deployment status
+    healthReport += "\n**Deployment Status:**\n";
+    healthReport += "✅ MCP Server: Successfully deployed and ready\n";
+    if (config.DISCORD_TOKEN) {
+      healthReport += "✅ Discord Integration: Configured and ready\n";
+    } else {
+      healthReport +=
+        "⚠️ Discord Integration: Token required for Discord features\n";
     }
 
     return {

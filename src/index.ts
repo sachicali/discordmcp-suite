@@ -53,14 +53,18 @@ const autoLogin = async () => {
   if (!token) {
     info("=== DISCORD CONFIGURATION STATUS ===");
     info(
-      "No Discord token configured. Server will start but Discord functionality will be limited.",
+      "No Discord token configured. MCP server will start successfully with limited Discord functionality.",
     );
+    info("✅ Server deployment: SUCCESSFUL");
+    info("⚠️ Discord features: DISABLED (token required)");
     const availableEnvVars = Object.keys(process.env).filter(
       (key) =>
         key.toLowerCase().includes("discord") ||
         key.toLowerCase().includes("token"),
     );
-    info(`Available environment variables: ${availableEnvVars.join(", ")}`);
+    if (availableEnvVars.length > 0) {
+      info(`Available environment variables: ${availableEnvVars.join(", ")}`);
+    }
     info("To enable Discord features:");
     info("  1. Set the DISCORD_TOKEN environment variable");
     info("  2. Or use the discord_login tool to provide a token");
