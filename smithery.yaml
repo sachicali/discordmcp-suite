@@ -14,36 +14,36 @@ startCommand:
         type: string
         title: "Discord Bot Token"
         description: "Discord bot token. Obtain this from the Discord Developer Portal."
-      enableUserManagement:
-        type: boolean
-        title: "Enable User Management"
-        description: "Enable user moderation tools (kick, ban, timeout, roles). Requires appropriate bot permissions."
-        default: false
-      enableVoiceChannels:
-        type: boolean
-        title: "Enable Voice Channels"
-        description: "Enable voice channel management tools. Requires Connect, Speak, and Move Members permissions."
-        default: false
-      enableDirectMessages:
-        type: boolean
-        title: "Enable Direct Messages"
-        description: "Enable sending direct messages to users. Users may have DMs disabled."
-        default: false
-      enableServerManagement:
-        type: boolean
-        title: "Enable Server Management"
-        description: "Enable server settings, emojis, and administrative tools. Requires Manage Guild permissions."
-        default: false
-      enableRbac:
-        type: boolean
-        title: "Enable RBAC (Role-Based Access Control)"
-        description: "Enable role creation, editing, and permission management. Requires Manage Roles permissions."
-        default: false
-      enableContentManagement:
-        type: boolean
-        title: "Enable Content Management"
-        description: "Enable bulk operations and advanced content moderation tools."
-        default: false
+       enableUserManagement:
+         type: boolean
+         title: "Enable User Management"
+         description: "Enable user moderation tools (kick, ban, timeout, roles). Requires appropriate bot permissions."
+         default: true
+       enableVoiceChannels:
+         type: boolean
+         title: "Enable Voice Channels"
+         description: "Enable voice channel management tools. Requires Connect, Speak, and Move Members permissions."
+         default: true
+       enableDirectMessages:
+         type: boolean
+         title: "Enable Direct Messages"
+         description: "Enable sending direct messages to users. Users may have DMs disabled."
+         default: true
+       enableServerManagement:
+         type: boolean
+         title: "Enable Server Management"
+         description: "Enable server settings, emojis, and administrative tools. Requires Manage Guild permissions."
+         default: true
+       enableRbac:
+         type: boolean
+         title: "Enable RBAC (Role-Based Access Control)"
+         description: "Enable role creation, editing, and permission management. Requires Manage Roles permissions."
+         default: true
+       enableContentManagement:
+         type: boolean
+         title: "Enable Content Management"
+         description: "Enable bulk operations and advanced content moderation tools."
+         default: true
       allowGuildIds:
         type: string
         title: "Allowed Guild IDs (Optional)"
@@ -56,12 +56,12 @@ startCommand:
         default: ""
   exampleConfig:
     discordToken: YOUR_DISCORD_BOT_TOKEN
-    enableUserManagement: false
-    enableVoiceChannels: false
-    enableDirectMessages: false
-    enableServerManagement: false
-    enableRbac: false
-    enableContentManagement: false
+    enableUserManagement: true
+    enableVoiceChannels: true
+    enableDirectMessages: true
+    enableServerManagement: true
+    enableRbac: true
+    enableContentManagement: true
     allowGuildIds: ""
     allowChannelIds: ""
   env:
@@ -74,13 +74,13 @@ startCommand:
     BOT_TOKEN: "{{discordToken}}"
     # Debug flag
     DEBUG_TOKEN: "true"
-    # Feature flags - map boolean values to environment variables with explicit string conversion
-    ENABLE_USER_MANAGEMENT: "{{enableUserManagement | toString}}"
-    ENABLE_VOICE_CHANNELS: "{{enableVoiceChannels | toString}}"
-    ENABLE_DIRECT_MESSAGES: "{{enableDirectMessages | toString}}"
-    ENABLE_SERVER_MANAGEMENT: "{{enableServerManagement | toString}}"
-    ENABLE_RBAC: "{{enableRbac | toString}}"
-    ENABLE_CONTENT_MANAGEMENT: "{{enableContentManagement | toString}}"
+    # Feature flags - enable all tools for Smithery discovery
+    ENABLE_USER_MANAGEMENT: "true"
+    ENABLE_VOICE_CHANNELS: "true"
+    ENABLE_DIRECT_MESSAGES: "true"
+    ENABLE_SERVER_MANAGEMENT: "true"
+    ENABLE_RBAC: "true"
+    ENABLE_CONTENT_MANAGEMENT: "true"
     # Security settings
     ALLOW_GUILD_IDS: "{{allowGuildIds}}"
     ALLOW_CHANNEL_IDS: "{{allowChannelIds}}"
