@@ -70,7 +70,7 @@ export class StreamableHttpTransport implements MCPTransport {
   }
 
   private setupEndpoints() {
-    // Health check endpoint for Smithery deployment
+    // Health check endpoint for cloud deployment and monitoring
     this.app.get("/health", (_req: Request, res: Response) => {
       try {
         const healthStatus = this.getHealthStatus();
@@ -84,8 +84,8 @@ export class StreamableHttpTransport implements MCPTransport {
         res.status(statusCode).json({
           status: healthStatus.status,
           timestamp: new Date().toISOString(),
-          version: "1.0.0",
-          service: "mcp-discord-server",
+          version: "1.4.0",
+          service: "discordmcp-suite",
           checks: healthStatus.checks,
           details: healthStatus.details,
         });
@@ -95,6 +95,31 @@ export class StreamableHttpTransport implements MCPTransport {
           status: "error",
           timestamp: new Date().toISOString(),
           error: "Health check failed",
+        });
+      }
+    });
+
+    // Readiness probe endpoint for Kubernetes/cloud deployments
+    this.app.get("/ready", (_req: Request, res: Response) => {
+      try {
+        const healthStatus = this.getHealthStatus();
+        const isReady =
+          healthStatus.status === "healthy" ||
+          healthStatus.status === "degraded";
+
+        res.status(isReady ? 200 : 503).json({
+          ready: isReady,
+          status: healthStatus.status,
+          timestamp: new Date().toISOString(),
+          service: "discordmcp-suite",
+        });
+      } catch (err) {
+        error("Readiness check error: " + String(err));
+        res.status(503).json({
+          ready: false,
+          status: "error",
+          timestamp: new Date().toISOString(),
+          error: "Readiness check failed",
         });
       }
     });
@@ -127,7 +152,7 @@ export class StreamableHttpTransport implements MCPTransport {
           missing_requirements: missingRequirements,
           debug: debugInfo,
           timestamp: new Date().toISOString(),
-          service: "mcp-discord-server",
+          service: "discordmcp-suite",
         });
       } catch (err) {
         error("Config endpoint error: " + String(err));
@@ -145,8 +170,8 @@ export class StreamableHttpTransport implements MCPTransport {
         const configSummary = this.getConfigSummary();
 
         res.json({
-          service: "mcp-discord-server",
-          version: "1.0.0",
+          service: "discordmcp-suite",
+          version: "1.4.0",
           status: healthStatus.status,
           configured: this.isConfigured(),
           transport: "http",

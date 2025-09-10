@@ -5,19 +5,19 @@ on:
     branches:
       - main
     tags:
-      - 'v*'
+      - "v*"
   pull_request:
     branches:
       - main
 
 env:
   REGISTRY: docker.io
-  IMAGE_NAME: barryy625/mcp-discord
+  IMAGE_NAME: sachicali/discordmcp-suite
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    
+
     permissions:
       contents: read
       packages: write
@@ -69,4 +69,4 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: ${{ env.IMAGE_NAME }}
-          readme-filepath: ./README.md 
+          readme-filepath: ./README.md

@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: discordmcp-suite
+  labels:
+    app: discordmcp-suite
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: discordmcp-suite
+  template:
+    metadata:
+      labels:
+        app: discordmcp-suite
+    spec:
+      containers:
+        - name: discordmcp-suite
+          image: sachicali/discordmcp-suite:latest
+          ports:
+            - containerPort: 8080
+              name: http
+          env:
+            - name: DISCORD_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: discordmcp-suite-secrets
+                  key: discord-token
+            - name: NODE_ENV
+              value: "production"
+            - name: PORT
+              value: "8080"
+          # Optional: Configure guild/channel restrictions
+          # - name: ALLOW_GUILD_IDS
+          #   value: "your_guild_id_here"
+          # - name: ENABLE_USER_MANAGEMENT
+          #   value: "1"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: discordmcp-suite-service
+  labels:
+    app: discordmcp-suite
+spec:
+  selector:
+    app: discordmcp-suite
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: discordmcp-suite-secrets
+type: Opaque
+data:
+  # Base64 encoded Discord bot token
+  # echo -n "your_discord_bot_token_here" | base64
+  discord-token: "eW91cl9kaXNjb3JkX2JvdF90b2tlbl9oZXJl"

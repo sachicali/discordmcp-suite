@@ -13,6 +13,7 @@
     "start": "node build/index.js",
     "dev": "node --loader ts-node/esm src/index.ts",
     "test-api": "node test-api.js",
+    "validate-env": "node validate-env.js",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
@@ -24,16 +25,15 @@
     "chatbot",
     "automation"
   ],
-  "author": "Barry Yip <barry99625@gmail.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/barryyip0625/mcp-discord.git"
+    "url": "git+https://github.com/sachicali/discordmcp-suite.git"
   },
   "bugs": {
-    "url": "https://github.com/barryyip0625/mcp-discord/issues"
+    "url": "https://github.com/sachicali/discordmcp-suite/issues"
   },
-  "homepage": "https://github.com/barryyip0625/mcp-discord#readme",
+  "homepage": "https://github.com/sachicali/discordmcp-suite#readme",
   "files": [
     "build/",
     "README.md",

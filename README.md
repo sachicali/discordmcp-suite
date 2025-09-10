@@ -1,12 +1,6 @@
 # MCP-Discord
 
-[![smithery badge](https://smithery.ai/badge/@barryyip0625/mcp-discord)](https://smithery.ai/server/@barryyip0625/mcp-discord) ![](https://badge.mcpx.dev?type=server "MCP Server") [![Docker Hub](https://img.shields.io/docker/v/barryy625/mcp-discord?logo=docker&label=Docker%20Hub)](https://hub.docker.com/r/barryy625/mcp-discord)
-
 A Discord MCP (Model Context Protocol) server that enables AI assistants to interact with the Discord platform.
-
-<a href="https://glama.ai/mcp/servers/@barryyip0625/mcp-discord">
-  <img width="380" height="200" src="https://glama.ai/mcp/servers/@barryyip0625/mcp-discord/badge" alt="MCP-Discord MCP server" />
-</a>
 
 ## Overview
 
@@ -192,23 +186,21 @@ For more details, you can check out the [NPM Package](https://www.npmjs.com/pack
 
 ### Installing via Smithery
 
-To install mcp-discord automatically via [Smithery](https://smithery.ai/server/@barryyip0625/mcp-discord)
+To install mcp-discord automatically via Smithery, visit the Smithery website and search for "mcp-discord"
 
 ### Installing via Docker
 
-You can run mcp-discord using Docker. The Docker images are automatically built and published to Docker Hub.
-
-**Docker Hub Repository**: [barryy625/mcp-discord](https://hub.docker.com/r/barryy625/mcp-discord)
+You can run mcp-discord using Docker. Build the image from source or use a pre-built image.
 
 ```bash
-# Pull the latest image
-docker pull barryy625/mcp-discord:latest
+# Build from source
+docker build -t mcp-discord .
 
 # Run with environment variable
-docker run -e DISCORD_TOKEN=your_discord_bot_token -p 8080:8080 barryy625/mcp-discord:latest
+docker run -e DISCORD_TOKEN=your_discord_bot_token -p 8080:8080 mcp-discord
 
 # Or run with command line config
-docker run -p 8080:8080 barryy625/mcp-discord:latest --config "your_discord_bot_token"
+docker run -p 8080:8080 mcp-discord --config "your_discord_bot_token"
 ```
 
 **Available Tags:**
@@ -220,23 +212,92 @@ docker run -p 8080:8080 barryy625/mcp-discord:latest --config "your_discord_bot_
 
 ```bash
 # Clone the repository
-git clone https://github.com/barryyip0625/mcp-discord.git
-cd mcp-discord
+git clone https://github.com/sachicali/discordmcp-suite.git
+cd discordmcp-suite
 
 # Install dependencies
 npm install
 
 # Compile TypeScript
 npm run build
+
+# Optional: Validate environment variables
+npm run validate-env
+```
+
+### Docker Compose (Recommended for Development)
+
+```bash
+# Create .env file with your Discord token
+echo "DISCORD_TOKEN=your_discord_bot_token_here" > .env
+
+# Start the service
+docker-compose up -d
+
+# Check health
+curl http://localhost:8080/health
+```
+
+### Cloud Deployment
+
+#### FastMCP Cloud
+
+The service is optimized for FastMCP Cloud deployment with:
+
+- ✅ Health checks (`/health`, `/ready`)
+- ✅ Environment validation
+- ✅ Non-root user execution
+- ✅ Proper signal handling
+- ✅ Multi-platform Docker builds
+
+#### Kubernetes
+
+Use the provided `k8s-deployment.yaml`:
+
+```bash
+# Update the secret with your Discord token
+kubectl apply -f k8s-deployment.yaml
+
+# Check deployment status
+kubectl get pods
+kubectl logs -f deployment/discordmcp-suite
+```
+
+#### Docker Hub
+
+```bash
+# Pull and run
+docker run -e DISCORD_TOKEN=your_token -p 8080:8080 sachicali/discordmcp-suite:latest
 ```
 
 ## Configuration
 
-A Discord bot token is required for proper operation. The server supports two transport methods: stdio and streamable HTTP.
+A Discord bot token is required for proper operation. The server supports HTTP transport optimized for cloud deployment.
 
 ### Environment Variables
 
 Create a `.env` file or set these environment variables:
+
+#### Required
+
+- `DISCORD_TOKEN` - Your Discord bot token (required)
+
+#### Optional
+
+- `PORT` or `HTTP_PORT` - Server port (default: 8080)
+- `ALLOW_GUILD_IDS` - Comma-separated list of allowed Discord server IDs
+- `ALLOW_CHANNEL_IDS` - Comma-separated list of allowed channel IDs
+- `ENABLE_USER_MANAGEMENT` - Enable user management features (1/0)
+- `ENABLE_VOICE_CHANNELS` - Enable voice channel features (1/0)
+- `ENABLE_DIRECT_MESSAGES` - Enable direct message features (1/0)
+- `ENABLE_SERVER_MANAGEMENT` - Enable server management features (1/0)
+- `ENABLE_RBAC` - Enable role-based access control (1/0)
+- `ENABLE_CONTENT_MANAGEMENT` - Enable content management features (1/0)
+
+#### Cloud Deployment
+
+- `NODE_ENV=production` - Enables production optimizations
+- Health checks available at `/health` and `/ready`
 
 ```bash
 # Required
@@ -328,7 +389,7 @@ You can use Docker containers with both Claude and Cursor. For full functionalit
         "ENABLE_DIRECT_MESSAGES=1",
         "-p",
         "8080:8080",
-        "barryy625/mcp-discord:latest",
+        "mcp-discord:latest",
         "--transport",
         "http",
         "--port",
@@ -1033,4 +1094,4 @@ ALLOW_CHANNEL_IDS=your_channel_ids_here
 
 ## License
 
-[MIT License](https://github.com/barryyip0625/mcp-discord?tab=MIT-1-ov-file)
+[MIT License](https://github.com/sachicali/discordmcp-suite/blob/main/LICENSE)
