@@ -546,19 +546,136 @@ const toolDefinitions = [
 // Convert Zod schemas to JSON Schema format for MCP
 function convertZodToJsonSchema(zodSchema: any): any {
   try {
-    // For now, return a basic schema that works with MCP
-    // TODO: Implement proper Zod to JSON Schema conversion
+    // Get the schema definition from Zod
+    const def = zodSchema._def;
+
+    if (def.typeName === "ZodObject") {
+      const properties: Record<string, any> = {};
+      const required: string[] = [];
+
+      // Get the shape by calling the shape function
+      let shape: any = null;
+      try {
+        if (typeof def.shape === "function") {
+          shape = def.shape();
+        } else {
+          shape = def.shape;
+        }
+      } catch (error) {
+        console.warn(`Error accessing shape for ZodObject schema:`, error);
+        return {
+          type: "object",
+          properties: {},
+        };
+      }
+
+      // If we still don't have a shape, return empty object schema
+      if (!shape) {
+        console.warn(`Unable to access shape for ZodObject schema`);
+        return {
+          type: "object",
+          properties: {},
+        };
+      }
+
+      // Process each property in the object
+      for (const [key, value] of Object.entries(shape)) {
+        const propSchema = convertZodToJsonSchema(value as any);
+        properties[key] = propSchema;
+
+        // Check if property is required (not optional)
+        if ((value as any)._def.typeName !== "ZodOptional") {
+          required.push(key);
+        }
+      }
+
+      return {
+        type: "object",
+        properties,
+        required: required.length > 0 ? required : undefined,
+      };
+    }
+
+    if (def.typeName === "ZodString") {
+      return {
+        type: "string",
+      };
+    }
+
+    if (def.typeName === "ZodNumber") {
+      return {
+        type: "number",
+      };
+    }
+
+    if (def.typeName === "ZodBoolean") {
+      return {
+        type: "boolean",
+      };
+    }
+
+    if (def.typeName === "ZodArray") {
+      return {
+        type: "array",
+        items: convertZodToJsonSchema(def.type),
+      };
+    }
+
+    if (def.typeName === "ZodOptional") {
+      // For optional fields, return the inner schema without marking as required
+      return convertZodToJsonSchema(def.innerType);
+    }
+
+    if (def.typeName === "ZodDefault") {
+      // Handle default values
+      const innerSchema = convertZodToJsonSchema(def.innerType);
+      if (innerSchema.type === "number" || innerSchema.type === "string") {
+        innerSchema.default = def.defaultValue();
+      }
+      return innerSchema;
+    }
+
+    if (def.typeName === "ZodEnum") {
+      return {
+        type: "string",
+        enum: def.values,
+      };
+    }
+
+    if (def.typeName === "ZodUnion") {
+      // For unions, try to create a more specific schema
+      const options = def.options.map((option: any) =>
+        convertZodToJsonSchema(option),
+      );
+      // If all options are the same type, return that type
+      const types = [...new Set(options.map((opt: any) => opt.type))];
+      if (types.length === 1) {
+        return options[0];
+      }
+      // Otherwise return string as fallback
+      return {
+        type: "string",
+      };
+    }
+
+    if (def.typeName === "ZodLiteral") {
+      return {
+        type: typeof def.value,
+        enum: [def.value],
+      };
+    }
+
+    // Fallback for unknown types
+    console.warn(`Unknown Zod type: ${def.typeName}, falling back to string`);
     return {
-      type: "object",
-      properties: {},
-      required: [],
+      type: "string",
     };
   } catch (error) {
+    console.error("Error converting Zod schema:", error);
     // Fallback to basic schema if conversion fails
     return {
       type: "object",
       properties: {},
-      required: [],
     };
   }
 }

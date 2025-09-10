@@ -1,8 +1,10 @@
 # Smithery configuration file: https://smithery.ai/docs/build/project-config/smithery.yaml
 
 version: 2
+runtime: "container"
 startCommand:
-  type: http
+  type: "http"
+  command: ["node", "build/fast-start.js"]
   configSchema:
     type: object
     required:
