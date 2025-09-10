@@ -325,7 +325,10 @@ export class AutomatedModerationService extends EventEmitter {
       if (pattern.test(content)) {
         violations.push(ViolationType.SPAM);
         evidence.spam_pattern = pattern.source;
-        maxSeverity = ViolationSeverity.MEDIUM;
+        maxSeverity = this.getHigherSeverity(
+          maxSeverity,
+          ViolationSeverity.MEDIUM,
+        );
         confidence = Math.max(confidence, 0.7);
         break;
       }
@@ -336,7 +339,10 @@ export class AutomatedModerationService extends EventEmitter {
       if (pattern.test(content)) {
         violations.push(ViolationType.PROFANITY);
         evidence.profanity_detected = true;
-        maxSeverity = ViolationSeverity.MEDIUM;
+        maxSeverity = this.getHigherSeverity(
+          maxSeverity,
+          ViolationSeverity.MEDIUM,
+        );
         confidence = Math.max(confidence, 0.8);
         break;
       }
@@ -347,7 +353,10 @@ export class AutomatedModerationService extends EventEmitter {
       if (pattern.test(content)) {
         violations.push(ViolationType.SCAM);
         evidence.scam_pattern = pattern.source;
-        maxSeverity = ViolationSeverity.CRITICAL;
+        maxSeverity = this.getHigherSeverity(
+          maxSeverity,
+          ViolationSeverity.CRITICAL,
+        );
         confidence = Math.max(confidence, 0.9);
         break;
       }
@@ -773,6 +782,38 @@ export class AutomatedModerationService extends EventEmitter {
    */
   getRules(): ModerationRule[] {
     return Array.from(this.rules.values());
+  }
+
+  /**
+   * Get higher severity between two severities
+   */
+  private getHigherSeverity(
+    current: ViolationSeverity,
+    candidate: ViolationSeverity,
+  ): ViolationSeverity {
+    const severityLevels = {
+      [ViolationSeverity.LOW]: 1,
+      [ViolationSeverity.MEDIUM]: 2,
+      [ViolationSeverity.HIGH]: 3,
+      [ViolationSeverity.CRITICAL]: 4,
+    };
+
+    return severityLevels[candidate] > severityLevels[current]
+      ? candidate
+      : current;
+  }
+
+  /**
+   * Get numeric level for severity comparison
+   */
+  private getSeverityLevel(severity: ViolationSeverity): number {
+    const levels = {
+      [ViolationSeverity.LOW]: 1,
+      [ViolationSeverity.MEDIUM]: 2,
+      [ViolationSeverity.HIGH]: 3,
+      [ViolationSeverity.CRITICAL]: 4,
+    };
+    return levels[severity] || 0;
   }
 
   /**
