@@ -12,8 +12,8 @@ startCommand:
         type: string
         title: "Discord Bot Token"
         description: "Discord bot token. Obtain this from the Discord Developer Portal."
-  exampleConfig:
-    discordToken: YOUR_DISCORD_BOT_TOKEN
+   exampleConfig:
+     discordToken: YOUR_DISCORD_BOT_TOKEN
    env:
      DISCORD_TOKEN: "{{discordToken}}"
      DEBUG_TOKEN: "true"
