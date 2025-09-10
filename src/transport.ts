@@ -71,7 +71,7 @@ export class StreamableHttpTransport implements MCPTransport {
 
   private setupEndpoints() {
     // Health check endpoint for Smithery deployment
-    this.app.get("/health", (req: Request, res: Response) => {
+    this.app.get("/health", (_req: Request, res: Response) => {
       try {
         const healthStatus = this.getHealthStatus();
         const statusCode =
@@ -100,15 +100,32 @@ export class StreamableHttpTransport implements MCPTransport {
     });
 
     // Configuration endpoint for Smithery deployment
-    this.app.get("/config", (req: Request, res: Response) => {
+    this.app.get("/config", (_req: Request, res: Response) => {
       try {
         const configSummary = this.getConfigSummary();
         const missingRequirements = this.getMissingRequirements();
+
+        // Debug: Log environment variables
+        const debugInfo = {
+          has_discord_token: !!process.env.DISCORD_TOKEN,
+          discord_token_length: process.env.DISCORD_TOKEN?.length || 0,
+          has_debug_token: !!process.env.DEBUG_TOKEN,
+          debug_token_value: process.env.DEBUG_TOKEN,
+          all_env_keys: Object.keys(process.env).filter(
+            (key) =>
+              key.toLowerCase().includes("discord") ||
+              key.toLowerCase().includes("token") ||
+              key.toLowerCase().includes("debug"),
+          ),
+        };
+
+        info(`Config endpoint debug: ${JSON.stringify(debugInfo)}`);
 
         res.json({
           configured: this.isConfigured(),
           config: configSummary,
           missing_requirements: missingRequirements,
+          debug: debugInfo,
           timestamp: new Date().toISOString(),
           service: "mcp-discord-server",
         });
@@ -122,7 +139,7 @@ export class StreamableHttpTransport implements MCPTransport {
     });
 
     // Status endpoint for deployment monitoring
-    this.app.get("/status", (req: Request, res: Response) => {
+    this.app.get("/status", (_req: Request, res: Response) => {
       try {
         const healthStatus = this.getHealthStatus();
         const configSummary = this.getConfigSummary();
