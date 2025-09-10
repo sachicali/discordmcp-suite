@@ -546,7 +546,13 @@ const toolDefinitions = [
 // Convert Zod schemas to JSON Schema format for MCP
 function convertZodToJsonSchema(zodSchema: any): any {
   try {
-    return zodSchema._def.openapi?.openapi || zodSchema._def.jsonSchema || {};
+    // For now, return a basic schema that works with MCP
+    // TODO: Implement proper Zod to JSON Schema conversion
+    return {
+      type: "object",
+      properties: {},
+      required: [],
+    };
   } catch (error) {
     // Fallback to basic schema if conversion fails
     return {
