@@ -12,7 +12,7 @@ on:
 
 env:
   REGISTRY: docker.io
-  IMAGE_NAME: sachicali/discordmcp-suite
+  IMAGE_NAME: chicali/discordmcp-suite
 
 jobs:
   build-and-push:
