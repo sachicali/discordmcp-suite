@@ -10,7 +10,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "start": "node build/index.js",
+    "start": "node build/fast-start.js",
     "dev": "node --loader ts-node/esm src/index.ts",
     "test-api": "node test-api.js",
     "validate-env": "node validate-env.js",

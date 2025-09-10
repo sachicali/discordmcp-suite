@@ -1,8 +1,8 @@
 # FastMCP Cloud Deployable Discord MCP Server
 FROM node:lts-alpine
 
-# Install dumb-init for proper signal handling
-RUN apk add --no-cache dumb-init
+# Install dumb-init and wget for proper signal handling and health checks
+RUN apk add --no-cache dumb-init wget
 
 # Create non-root user for security
 RUN addgroup -g 1001 -S nodejs && \
@@ -32,9 +32,9 @@ RUN npm prune --production && \
 RUN chown -R mcpuser:nodejs /app
 USER mcpuser
 
-# Add health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD node -e "require('http').get('http://localhost:8080/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) }).on('error', () => process.exit(1))"
+# Add simple health check
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD wget --quiet --tries=1 --spider http://localhost:8080/health || exit 1
 
 # Expose HTTP port
 EXPOSE 8080
@@ -42,5 +42,5 @@ EXPOSE 8080
 # Use dumb-init to handle signals properly
 ENTRYPOINT ["dumb-init", "--"]
 
-# Default command to run the MCP server with HTTP transport
-CMD ["sh", "-c", "node validate-env.js && node build/index.js --transport http --port 8080"]
+# Default command to run the MCP server with fast startup
+CMD ["node", "build/fast-start.js"]
