@@ -61,7 +61,9 @@ export class ConfigManager {
           process.env.discordToken ||
           process.env.DISCORDTOKEN ||
           process.env.token ||
-          process.env.BOT_TOKEN;
+          process.env.BOT_TOKEN ||
+          process.env.DISCORD_BOT_TOKEN ||
+          process.env.config_discordToken;
         if (smitheryToken) {
           info(
             `Discord token found via Smithery.ai config (length: ${smitheryToken.length})`,
@@ -95,6 +97,29 @@ export class ConfigManager {
         // Debug: Log DEBUG_TOKEN if present
         if (process.env.DEBUG_TOKEN) {
           info(`DEBUG_TOKEN is set to: ${process.env.DEBUG_TOKEN}`);
+          // Log ALL environment variables for debugging (in deployed environments only)
+          if (
+            process.env.NODE_ENV === "production" ||
+            process.env.DEBUG_TOKEN === "true"
+          ) {
+            info("=== ALL ENVIRONMENT VARIABLES (for debugging) ===");
+            Object.keys(process.env)
+              .sort()
+              .forEach((key) => {
+                const value = process.env[key];
+                if (value) {
+                  const masked =
+                    key.toLowerCase().includes("token") ||
+                    key.toLowerCase().includes("secret")
+                      ? value.length > 10
+                        ? value.substring(0, 10) + "..."
+                        : value
+                      : value;
+                  info(`  ${key}: ${masked}`);
+                }
+              });
+            info("=== END ENVIRONMENT VARIABLES ===");
+          }
         }
 
         return null;
