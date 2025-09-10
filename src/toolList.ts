@@ -671,13 +671,9 @@ function getFilteredTools() {
   });
 
   // Filter the tools array based on enabled tools
-  let filteredTools = baseTools.filter((tool) =>
+  const filteredTools = baseTools.filter((tool) =>
     enabledToolNames.has(tool.name),
   );
-
-  // TEMPORARILY LIMIT TOOLS TO TEST IF VOLUME IS THE ISSUE
-  // Comment out this line to restore all tools
-  filteredTools = filteredTools.slice(0, 30);
 
   if (process.env.DEBUG_TOKEN) {
     info(
@@ -693,3 +689,50 @@ function getFilteredTools() {
 
 // Export the filtered tool list
 export const toolList = getFilteredTools();
+
+// Pagination helper functions
+export interface PaginationOptions {
+  page?: number;
+  limit?: number;
+}
+
+export interface PaginatedTools {
+  tools: any[];
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    pages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+  };
+}
+
+export function getPaginatedTools(
+  options: PaginationOptions = {},
+): PaginatedTools {
+  const { page = 1, limit = 50 } = options;
+  const allTools = getFilteredTools();
+
+  const total = allTools.length;
+  const pages = Math.ceil(total / limit);
+  const startIndex = (page - 1) * limit;
+  const endIndex = startIndex + limit;
+
+  const tools = allTools.slice(startIndex, endIndex);
+
+  return {
+    tools,
+    pagination: {
+      total,
+      page,
+      limit,
+      pages,
+      hasNext: page < pages,
+      hasPrev: page > 1,
+    },
+  };
+}
+
+// Export all tools for backward compatibility
+export const allTools = getFilteredTools();

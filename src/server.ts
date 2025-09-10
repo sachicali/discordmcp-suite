@@ -16,7 +16,11 @@ import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
-import { toolList } from "./toolList.js";
+import {
+  toolList,
+  getPaginatedTools,
+  type PaginatedTools,
+} from "./toolList.js";
 import {
   createToolContext,
   loginHandler,
@@ -141,10 +145,21 @@ export class DiscordMCPServer {
   }
 
   private setupHandlers() {
-    // Set up the tool list
-    this.server.setRequestHandler(ListToolsRequestSchema, async () => {
+    // Set up the tool list with pagination support
+    this.server.setRequestHandler(ListToolsRequestSchema, async (request) => {
+      // Extract pagination parameters from the request if available
+      const params = request.params || {};
+      const page = typeof params.page === "number" ? params.page : 1;
+      const limit =
+        typeof params.limit === "number" ? Math.min(params.limit, 100) : 50; // Max 100 tools per page
+
+      const paginatedResult = getPaginatedTools({ page, limit });
+
+      // Return paginated response with metadata
       return {
-        tools: toolList,
+        tools: paginatedResult.tools,
+        // Include pagination metadata for clients that support it
+        _pagination: paginatedResult.pagination,
       };
     });
 
