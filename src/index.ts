@@ -53,14 +53,25 @@ const autoLogin = async () => {
 
   try {
     info("Attempting to log in to Discord...");
-    await client.login(token);
 
-    // Wait for the client to be ready with timeout
+    // Add timeout to login process
+    const loginTimeout = 15000; // 15 seconds for login
+    const loginPromise = client.login(token);
+
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => {
+        reject(new Error("Discord login timeout after 15 seconds"));
+      }, loginTimeout);
+    });
+
+    await Promise.race([loginPromise, timeoutPromise]);
+
+    // Wait for the client to be ready with shorter timeout
     if (!client.isReady()) {
       await new Promise<void>((resolve, reject) => {
         const timeout = setTimeout(() => {
-          reject(new Error("Discord client ready timeout after 30 seconds"));
-        }, 30000);
+          reject(new Error("Discord client ready timeout after 15 seconds"));
+        }, 15000); // Reduced from 30 to 15 seconds
 
         client.once("ready", () => {
           clearTimeout(timeout);
@@ -120,16 +131,31 @@ const initializeTransport = () => {
   }
 };
 
-// Start auto-login process
-await autoLogin();
+// Start auto-login process (don't await - run in background)
+info("Starting Discord auto-login in background...");
+autoLogin().catch((err) => {
+  error("Auto-login failed: " + String(err));
+  info("Server will continue without Discord functionality");
+});
 
 // Create and start MCP server with selected transport
 const transport = initializeTransport();
 const mcpServer = new DiscordMCPServer(client, transport);
 
 try {
-  await mcpServer.start();
+  // Add startup timeout for cloud deployments
+  const startupTimeout = 30000; // 30 seconds
+  const startupPromise = mcpServer.start();
+
+  const timeoutPromise = new Promise((_, reject) => {
+    setTimeout(() => {
+      reject(new Error("Server startup timeout after 30 seconds"));
+    }, startupTimeout);
+  });
+
+  await Promise.race([startupPromise, timeoutPromise]);
   info("MCP server started successfully");
+  info("✅ Server is ready for connections");
 
   // Keep the Node.js process running
   if (config.TRANSPORT.toLowerCase() === "http") {

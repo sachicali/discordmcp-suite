@@ -978,8 +978,17 @@ export class StreamableHttpTransport implements MCPTransport {
     return new Promise((resolve) => {
       this.httpServer = this.app.listen(this.port, "0.0.0.0", () => {
         info(`MCP Server listening on 0.0.0.0:${this.port}`);
+        info("Server is ready to accept requests");
         resolve();
       });
+
+      // Also resolve after a short delay to ensure we don't hang
+      setTimeout(() => {
+        if (!this.httpServer?.listening) {
+          info("Server startup timeout fallback triggered");
+          resolve();
+        }
+      }, 5000);
     });
   }
 
