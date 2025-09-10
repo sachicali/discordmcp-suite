@@ -6,7 +6,12 @@ import { toolList } from "./toolList.js";
 import {
   createToolContext,
   loginHandler,
+  setTokenHandler,
+  validateTokenHandler,
   loginStatusHandler,
+  logoutHandler,
+  updateConfigHandler,
+  healthCheckHandler,
   listServersHandler,
   sendMessageHandler,
   getForumChannelsHandler,
@@ -405,6 +410,43 @@ export class StreamableHttpTransport implements MCPTransport {
             result = await loginStatusHandler({}, this.toolContext!);
             break;
 
+          case "discord_set_token":
+            result = await setTokenHandler(params, this.toolContext!);
+            break;
+
+          case "discord_validate_token":
+            result = await validateTokenHandler(params, this.toolContext!);
+            break;
+
+          case "discord_logout":
+            result = await logoutHandler(params, this.toolContext!);
+            break;
+
+          case "discord_update_config":
+            result = await updateConfigHandler(params, this.toolContext!);
+            break;
+
+          case "discord_health_check":
+            result = await healthCheckHandler(params, this.toolContext!);
+            break;
+
+          case "discord_list_servers":
+            // Check if client is logged in
+            if (!this.toolContext!.client.isReady()) {
+              return res.json({
+                jsonrpc: "2.0",
+                error: {
+                  code: -32603,
+                  message:
+                    "Discord client not logged in. Please use discord_login tool first.",
+                },
+                id: req.body?.id || null,
+              });
+            }
+
+            result = await listServersHandler({}, this.toolContext!);
+            break;
+
           case "discord_list_servers":
             // Check if client is logged in
             if (!this.toolContext!.client.isReady()) {
@@ -704,8 +746,31 @@ export class StreamableHttpTransport implements MCPTransport {
                 );
                 break;
 
+              case "discord_set_token":
+                result = await setTokenHandler(toolArgs, this.toolContext!);
+                break;
+
+              case "discord_validate_token":
+                result = await validateTokenHandler(
+                  toolArgs,
+                  this.toolContext!,
+                );
+                break;
+
               case "discord_login_status":
                 result = await loginStatusHandler(toolArgs, this.toolContext!);
+                break;
+
+              case "discord_logout":
+                result = await logoutHandler(toolArgs, this.toolContext!);
+                break;
+
+              case "discord_update_config":
+                result = await updateConfigHandler(toolArgs, this.toolContext!);
+                break;
+
+              case "discord_health_check":
+                result = await healthCheckHandler(toolArgs, this.toolContext!);
                 break;
 
               case "discord_list_servers":
