@@ -247,13 +247,33 @@ export class StreamableHttpTransport implements MCPTransport {
         switch (method) {
           case "initialize":
             // Handle initialize method for MCP protocol compliance
+            info("=== MCP SERVER INITIALIZATION ===");
+            info(`DISCORD_TOKEN present: ${!!process.env.DISCORD_TOKEN}`);
+            info(
+              `DISCORD_TOKEN length: ${process.env.DISCORD_TOKEN?.length || 0}`,
+            );
+            info(`DEBUG_TOKEN present: ${!!process.env.DEBUG_TOKEN}`);
+            info(`DEBUG_TOKEN value: ${process.env.DEBUG_TOKEN}`);
+            info(
+              `All env vars with 'discord' or 'token': ${Object.keys(
+                process.env,
+              )
+                .filter(
+                  (key) =>
+                    key.toLowerCase().includes("discord") ||
+                    key.toLowerCase().includes("token") ||
+                    key.toLowerCase().includes("debug"),
+                )
+                .join(", ")}`,
+            );
+            info("=== END INITIALIZATION LOG ===");
+
             result = {
               protocolVersion: "2025-03-26",
               capabilities: {
                 tools: {
                   listChanged: false,
                 },
-                logging: {},
               },
               serverInfo: {
                 name: "MCP-Discord",
@@ -274,6 +294,14 @@ export class StreamableHttpTransport implements MCPTransport {
 
           case "tools/list":
             // New MCP method name format
+            info("=== TOOLS LIST REQUEST ===");
+            info(`DISCORD_TOKEN present: ${!!process.env.DISCORD_TOKEN}`);
+            info(
+              `DISCORD_TOKEN length: ${process.env.DISCORD_TOKEN?.length || 0}`,
+            );
+            info(`DEBUG_TOKEN present: ${!!process.env.DEBUG_TOKEN}`);
+            info("=== END TOOLS LIST LOG ===");
+
             result = { tools: toolList };
             break;
 
@@ -283,6 +311,19 @@ export class StreamableHttpTransport implements MCPTransport {
             break;
 
           case "discord_login":
+            info("=== DISCORD LOGIN ATTEMPT ===");
+            info(
+              `Environment DISCORD_TOKEN present: ${!!process.env.DISCORD_TOKEN}`,
+            );
+            info(
+              `Environment DISCORD_TOKEN length: ${process.env.DISCORD_TOKEN?.length || 0}`,
+            );
+            info(`Client token present: ${!!this.toolContext!.client.token}`);
+            info(
+              `Client token length: ${this.toolContext!.client.token?.length || 0}`,
+            );
+            info("=== END LOGIN ATTEMPT LOG ===");
+
             result = await loginHandler(params, this.toolContext!);
             // Log client state after login
             info(
