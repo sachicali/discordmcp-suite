@@ -79,6 +79,14 @@ import {
   getRolePermissionsHandler,
 } from "./user.js";
 import { sendDirectMessageHandler, getDirectMessagesHandler } from "./dm.js";
+import {
+  createVoiceChannelHandler,
+  deleteVoiceChannelHandler,
+  editVoiceChannelHandler,
+  listVoiceChannelsHandler,
+  getVoiceChannelInfoHandler,
+  moveUserToVoiceChannelHandler,
+} from "./voice.js";
 
 // Export tool handlers
 export {
@@ -149,6 +157,12 @@ export {
   getRolePermissionsHandler,
   sendDirectMessageHandler,
   getDirectMessagesHandler,
+  createVoiceChannelHandler,
+  deleteVoiceChannelHandler,
+  editVoiceChannelHandler,
+  listVoiceChannelsHandler,
+  getVoiceChannelInfoHandler,
+  moveUserToVoiceChannelHandler,
 };
 
 // Export common types

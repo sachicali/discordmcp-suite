@@ -1,6 +1,6 @@
 import { ToolHandler } from "./types.js";
 import { handleDiscordError } from "../errorHandler.js";
-import { info, error } from "../logger.js";
+import { error } from "../logger.js";
 
 // Create voice channel
 export const createVoiceChannelHandler: ToolHandler = async (args, context) => {
@@ -228,6 +228,173 @@ export const getVoiceChannelInfoHandler: ToolHandler = async (
   } catch (err) {
     error(
       `Error getting voice channel info: ${err instanceof Error ? err.message : String(err)}`,
+    );
+    return handleDiscordError(err);
+  }
+};
+
+// Move user between voice channels
+export const moveUserToVoiceChannelHandler: ToolHandler = async (
+  args,
+  context,
+) => {
+  try {
+    const guild = context.client.guilds.cache.get(args.guildId);
+    if (!guild) {
+      return {
+        content: [{ type: "text", text: "Guild not found" }],
+        isError: true,
+      };
+    }
+
+    const member = guild.members.cache.get(args.userId);
+    if (!member) {
+      return {
+        content: [{ type: "text", text: "Member not found in guild" }],
+        isError: true,
+      };
+    }
+
+    const targetChannel = guild.channels.cache.get(args.targetChannelId);
+    if (!targetChannel) {
+      return {
+        content: [{ type: "text", text: "Target voice channel not found" }],
+        isError: true,
+      };
+    }
+
+    if (targetChannel.type !== 2) {
+      return {
+        content: [
+          { type: "text", text: "Target channel is not a voice channel" },
+        ],
+        isError: true,
+      };
+    }
+
+    if (!member.voice.channel) {
+      return {
+        content: [
+          { type: "text", text: "User is not connected to a voice channel" },
+        ],
+        isError: true,
+      };
+    }
+
+    await member.voice.setChannel(
+      targetChannel,
+      args.reason || "User moved via MCP",
+    );
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Successfully moved ${member.user.username} to ${targetChannel.name}`,
+        },
+      ],
+    };
+  } catch (err) {
+    error(
+      `Error moving user to voice channel: ${err instanceof Error ? err.message : String(err)}`,
+    );
+    return handleDiscordError(err);
+  }
+};
+
+// Mute user in voice channel
+export const muteUserInVoiceHandler: ToolHandler = async (args, context) => {
+  try {
+    const guild = context.client.guilds.cache.get(args.guildId);
+    if (!guild) {
+      return {
+        content: [{ type: "text", text: "Guild not found" }],
+        isError: true,
+      };
+    }
+
+    const member = guild.members.cache.get(args.userId);
+    if (!member) {
+      return {
+        content: [{ type: "text", text: "Member not found in guild" }],
+        isError: true,
+      };
+    }
+
+    if (!member.voice.channel) {
+      return {
+        content: [
+          { type: "text", text: "User is not connected to a voice channel" },
+        ],
+        isError: true,
+      };
+    }
+
+    await member.voice.setMute(
+      args.muted,
+      args.reason || "Voice mute toggled via MCP",
+    );
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Successfully ${args.muted ? "muted" : "unmuted"} ${member.user.username} in voice channel`,
+        },
+      ],
+    };
+  } catch (err) {
+    error(
+      `Error muting user in voice channel: ${err instanceof Error ? err.message : String(err)}`,
+    );
+    return handleDiscordError(err);
+  }
+};
+
+// Deafen user in voice channel
+export const deafenUserInVoiceHandler: ToolHandler = async (args, context) => {
+  try {
+    const guild = context.client.guilds.cache.get(args.guildId);
+    if (!guild) {
+      return {
+        content: [{ type: "text", text: "Guild not found" }],
+        isError: true,
+      };
+    }
+
+    const member = guild.members.cache.get(args.userId);
+    if (!member) {
+      return {
+        content: [{ type: "text", text: "Member not found in guild" }],
+        isError: true,
+      };
+    }
+
+    if (!member.voice.channel) {
+      return {
+        content: [
+          { type: "text", text: "User is not connected to a voice channel" },
+        ],
+        isError: true,
+      };
+    }
+
+    await member.voice.setDeaf(
+      args.deafened,
+      args.reason || "Voice deafen toggled via MCP",
+    );
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Successfully ${args.deafened ? "deafened" : "undeafened"} ${member.user.username} in voice channel`,
+        },
+      ],
+    };
+  } catch (err) {
+    error(
+      `Error deafening user in voice channel: ${err instanceof Error ? err.message : String(err)}`,
     );
     return handleDiscordError(err);
   }

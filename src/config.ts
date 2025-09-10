@@ -145,22 +145,204 @@ export class ConfigManager {
           : [];
       })(),
 
-      ENABLE_USER_MANAGEMENT: this.parseBoolean(
-        process.env.ENABLE_USER_MANAGEMENT,
-      ),
-      ENABLE_VOICE_CHANNELS: this.parseBoolean(
-        process.env.ENABLE_VOICE_CHANNELS,
-      ),
-      ENABLE_DIRECT_MESSAGES: this.parseBoolean(
-        process.env.ENABLE_DIRECT_MESSAGES,
-      ),
-      ENABLE_SERVER_MANAGEMENT: this.parseBoolean(
-        process.env.ENABLE_SERVER_MANAGEMENT,
-      ),
-      ENABLE_RBAC: this.parseBoolean(process.env.ENABLE_RBAC),
-      ENABLE_CONTENT_MANAGEMENT: this.parseBoolean(
-        process.env.ENABLE_CONTENT_MANAGEMENT,
-      ),
+      ENABLE_USER_MANAGEMENT: (() => {
+        // Check multiple environment variable formats for Smithery compatibility
+        const envValue =
+          process.env.ENABLE_USER_MANAGEMENT ||
+          process.env.enableUserManagement ||
+          process.env.USER_MANAGEMENT ||
+          process.env.enable_user_management ||
+          process.env.user_management;
+
+        // Handle Smithery boolean conversion issues
+        if (
+          envValue === "false" ||
+          envValue === "0" ||
+          envValue === "no" ||
+          envValue === "off"
+        ) {
+          return false;
+        }
+        if (
+          envValue === "true" ||
+          envValue === "1" ||
+          envValue === "yes" ||
+          envValue === "on"
+        ) {
+          return true;
+        }
+
+        const value = this.parseBoolean(envValue, false); // Default to disabled
+        if (process.env.DEBUG_TOKEN) {
+          info(`ENABLE_USER_MANAGEMENT: env="${envValue}" -> ${value}`);
+        }
+        return value;
+      })(),
+      ENABLE_VOICE_CHANNELS: (() => {
+        // Check multiple environment variable formats for Smithery compatibility
+        const envValue =
+          process.env.ENABLE_VOICE_CHANNELS ||
+          process.env.enableVoiceChannels ||
+          process.env.VOICE_CHANNELS ||
+          process.env.enable_voice_channels ||
+          process.env.voice_channels;
+
+        // Handle Smithery boolean conversion issues
+        if (
+          envValue === "false" ||
+          envValue === "0" ||
+          envValue === "no" ||
+          envValue === "off"
+        ) {
+          return false;
+        }
+        if (
+          envValue === "true" ||
+          envValue === "1" ||
+          envValue === "yes" ||
+          envValue === "on"
+        ) {
+          return true;
+        }
+
+        const value = this.parseBoolean(envValue, false); // Default to disabled
+        if (process.env.DEBUG_TOKEN) {
+          info(`ENABLE_VOICE_CHANNELS: env="${envValue}" -> ${value}`);
+        }
+        return value;
+      })(),
+      ENABLE_DIRECT_MESSAGES: (() => {
+        // Check multiple environment variable formats for Smithery compatibility
+        const envValue =
+          process.env.ENABLE_DIRECT_MESSAGES ||
+          process.env.enableDirectMessages ||
+          process.env.DIRECT_MESSAGES ||
+          process.env.enable_direct_messages ||
+          process.env.direct_messages;
+
+        // Handle Smithery boolean conversion issues
+        if (
+          envValue === "false" ||
+          envValue === "0" ||
+          envValue === "no" ||
+          envValue === "off"
+        ) {
+          return false;
+        }
+        if (
+          envValue === "true" ||
+          envValue === "1" ||
+          envValue === "yes" ||
+          envValue === "on"
+        ) {
+          return true;
+        }
+
+        const value = this.parseBoolean(envValue, false); // Default to disabled
+        if (process.env.DEBUG_TOKEN) {
+          info(`ENABLE_DIRECT_MESSAGES: env="${envValue}" -> ${value}`);
+        }
+        return value;
+      })(),
+      ENABLE_SERVER_MANAGEMENT: (() => {
+        // Check multiple environment variable formats for Smithery compatibility
+        const envValue =
+          process.env.ENABLE_SERVER_MANAGEMENT ||
+          process.env.enableServerManagement ||
+          process.env.SERVER_MANAGEMENT ||
+          process.env.enable_server_management ||
+          process.env.server_management;
+
+        // Handle Smithery boolean conversion issues
+        if (
+          envValue === "false" ||
+          envValue === "0" ||
+          envValue === "no" ||
+          envValue === "off"
+        ) {
+          return false;
+        }
+        if (
+          envValue === "true" ||
+          envValue === "1" ||
+          envValue === "yes" ||
+          envValue === "on"
+        ) {
+          return true;
+        }
+
+        const value = this.parseBoolean(envValue, false); // Default to disabled
+        if (process.env.DEBUG_TOKEN) {
+          info(`ENABLE_SERVER_MANAGEMENT: env="${envValue}" -> ${value}`);
+        }
+        return value;
+      })(),
+      ENABLE_RBAC: (() => {
+        // Check multiple environment variable formats for Smithery compatibility
+        const envValue =
+          process.env.ENABLE_RBAC ||
+          process.env.enableRbac ||
+          process.env.RBAC ||
+          process.env.enable_rbac ||
+          process.env.rbac;
+
+        // Handle Smithery boolean conversion issues
+        if (
+          envValue === "false" ||
+          envValue === "0" ||
+          envValue === "no" ||
+          envValue === "off"
+        ) {
+          return false;
+        }
+        if (
+          envValue === "true" ||
+          envValue === "1" ||
+          envValue === "yes" ||
+          envValue === "on"
+        ) {
+          return true;
+        }
+
+        const value = this.parseBoolean(envValue, false); // Default to disabled
+        if (process.env.DEBUG_TOKEN) {
+          info(`ENABLE_RBAC: env="${envValue}" -> ${value}`);
+        }
+        return value;
+      })(),
+      ENABLE_CONTENT_MANAGEMENT: (() => {
+        // Check multiple environment variable formats for Smithery compatibility
+        const envValue =
+          process.env.ENABLE_CONTENT_MANAGEMENT ||
+          process.env.enableContentManagement ||
+          process.env.CONTENT_MANAGEMENT ||
+          process.env.enable_content_management ||
+          process.env.content_management;
+
+        // Handle Smithery boolean conversion issues
+        if (
+          envValue === "false" ||
+          envValue === "0" ||
+          envValue === "no" ||
+          envValue === "off"
+        ) {
+          return false;
+        }
+        if (
+          envValue === "true" ||
+          envValue === "1" ||
+          envValue === "yes" ||
+          envValue === "on"
+        ) {
+          return true;
+        }
+
+        const value = this.parseBoolean(envValue, false); // Default to disabled
+        if (process.env.DEBUG_TOKEN) {
+          info(`ENABLE_CONTENT_MANAGEMENT: env="${envValue}" -> ${value}`);
+        }
+        return value;
+      })(),
 
       TRANSPORT: (() => {
         const transportIndex = process.argv.indexOf("--transport");
@@ -206,8 +388,56 @@ export class ConfigManager {
     value: string | undefined,
     defaultValue: boolean = false,
   ): boolean {
-    if (!value) return defaultValue;
-    return value === "1" || value.toLowerCase() === "true";
+    // Log for debugging Smithery environment variables
+    if (process.env.DEBUG_TOKEN) {
+      info(`parseBoolean: value="${value}", default=${defaultValue}`);
+    }
+
+    if (!value || value === "") {
+      if (process.env.DEBUG_TOKEN) {
+        info(`parseBoolean: empty value, returning default: ${defaultValue}`);
+      }
+      return defaultValue;
+    }
+
+    // Handle explicit false values for Smithery compatibility
+    const lowerValue = value.toLowerCase().trim();
+    if (
+      lowerValue === "false" ||
+      lowerValue === "0" ||
+      lowerValue === "no" ||
+      lowerValue === "off" ||
+      lowerValue === "disabled" ||
+      lowerValue === "disable"
+    ) {
+      if (process.env.DEBUG_TOKEN) {
+        info(`parseBoolean: detected false value "${lowerValue}"`);
+      }
+      return false;
+    }
+
+    // Handle explicit true values
+    if (
+      lowerValue === "true" ||
+      lowerValue === "1" ||
+      lowerValue === "yes" ||
+      lowerValue === "on" ||
+      lowerValue === "enabled" ||
+      lowerValue === "enable"
+    ) {
+      if (process.env.DEBUG_TOKEN) {
+        info(`parseBoolean: detected true value "${lowerValue}"`);
+      }
+      return true;
+    }
+
+    // For any other value, return the default
+    if (process.env.DEBUG_TOKEN) {
+      info(
+        `parseBoolean: unknown value "${lowerValue}", returning default: ${defaultValue}`,
+      );
+    }
+    return defaultValue;
   }
 
   private validateConfig(): void {
