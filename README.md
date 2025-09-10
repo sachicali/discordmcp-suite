@@ -373,7 +373,11 @@ For more details, you can check out the [NPM Package](https://www.npmjs.com/pack
 
 ### Installing via Smithery
 
-To install mcp-discord automatically via Smithery, visit the Smithery website and search for "mcp-discord"
+To install Discord Admin MCP for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@sachicali/discordmcp-suite):
+
+```bash
+npx -y @smithery/cli install @sachicali/discordmcp-suite --client claude
+```
 
 ### Installing via Docker
 
