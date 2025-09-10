@@ -81,5 +81,5 @@ metadata:
 type: Opaque
 data:
   # Base64 encoded Discord bot token
-  # echo -n "your_discord_bot_token_here" | base64
-  discord-token: "eW91cl9kaXNjb3JkX2JvdF90b2tlbl9oZXJl"
+  # Generate with: echo -n "your_actual_token_here" | base64
+  discord-token: "" # Replace with your actual base64-encoded token
