@@ -1,10 +1,10 @@
 {
-  "name": "mcp-discord",
-  "version": "1.4.0",
-  "description": "Enterprise Model Context Protocol (MCP) server for Discord integration with 58+ advanced features including rate limiting, security monitoring, auto-moderation, analytics, and comprehensive enterprise management tools",
+  "name": "discordmcp-suite",
+  "version": "2.3.0",
+  "description": "Enterprise Model Context Protocol (MCP) server for Discord integration with 73 advanced features including rate limiting, security monitoring, auto-moderation, analytics, and comprehensive enterprise management tools",
   "main": "build/index.js",
   "bin": {
-    "mcp-discord": "build/index.js"
+    "discordmcp-suite": "build/index.js"
   },
   "type": "module",
   "scripts": {
