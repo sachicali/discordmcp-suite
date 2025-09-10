@@ -1,4 +1,11 @@
-export const toolList = [
+import { configManager } from "./config.js";
+import { info } from "./logger.js";
+
+// Get current configuration to filter tools based on feature flags
+const config = configManager.getConfig();
+
+// Base tools that are always available (core functionality)
+const baseTools = [
   {
     name: "discord_create_category",
     description: "Creates a new category in a Discord server.",
@@ -1014,4 +1021,217 @@ export const toolList = [
       required: ["guildId"],
     },
   },
+  {
+    name: "discord_create_voice_channel",
+    description: "Creates a new voice channel in a Discord server",
+    displayName: "🎤➕ Create Voice Channel",
+    inputSchema: {
+      type: "object",
+      properties: {
+        guildId: { type: "string" },
+        channelName: { type: "string" },
+        categoryId: { type: "string" },
+        userLimit: { type: "number", minimum: 0, maximum: 99, default: 0 },
+        bitrate: {
+          type: "number",
+          minimum: 8000,
+          maximum: 384000,
+          default: 64000,
+        },
+        reason: { type: "string" },
+      },
+      required: ["guildId", "channelName"],
+    },
+  },
+  {
+    name: "discord_delete_voice_channel",
+    description: "Deletes a voice channel from the Discord server",
+    displayName: "🎤🗑️ Delete Voice Channel",
+    inputSchema: {
+      type: "object",
+      properties: {
+        guildId: { type: "string" },
+        channelId: { type: "string" },
+        reason: { type: "string" },
+      },
+      required: ["guildId", "channelId"],
+    },
+  },
+  {
+    name: "discord_edit_voice_channel",
+    description: "Edits an existing voice channel's properties",
+    displayName: "🎤✏️ Edit Voice Channel",
+    inputSchema: {
+      type: "object",
+      properties: {
+        guildId: { type: "string" },
+        channelId: { type: "string" },
+        name: { type: "string" },
+        userLimit: { type: "number", minimum: 0, maximum: 99 },
+        bitrate: { type: "number", minimum: 8000, maximum: 384000 },
+        categoryId: { type: "string" },
+        reason: { type: "string" },
+      },
+      required: ["guildId", "channelId"],
+    },
+  },
+  {
+    name: "discord_list_voice_channels",
+    description: "Lists all voice channels in a Discord server",
+    displayName: "🎤📋 List Voice Channels",
+    inputSchema: {
+      type: "object",
+      properties: {
+        guildId: { type: "string" },
+      },
+      required: ["guildId"],
+    },
+  },
+  {
+    name: "discord_get_voice_channel_info",
+    description: "Gets detailed information about a specific voice channel",
+    displayName: "🎤ℹ️ Get Voice Channel Info",
+    inputSchema: {
+      type: "object",
+      properties: {
+        guildId: { type: "string" },
+        channelId: { type: "string" },
+      },
+      required: ["guildId", "channelId"],
+    },
+  },
+  {
+    name: "discord_move_user_to_voice_channel",
+    description: "Moves a user to a different voice channel",
+    displayName: "🎤↔️ Move User to Voice Channel",
+    inputSchema: {
+      type: "object",
+      properties: {
+        guildId: { type: "string" },
+        userId: { type: "string" },
+        channelId: { type: "string" },
+        reason: { type: "string" },
+      },
+      required: ["guildId", "userId", "channelId"],
+    },
+  },
 ];
+
+// User Management Tools (can be disabled via ENABLE_USER_MANAGEMENT=false)
+const userManagementTools = [
+  "discord_get_user_info",
+  "discord_get_guild_member",
+  "discord_list_guild_members",
+  "discord_add_role_to_member",
+  "discord_remove_role_from_member",
+  "discord_kick_member",
+  "discord_ban_member",
+  "discord_unban_member",
+  "discord_timeout_member",
+];
+
+// Voice Channel Tools (can be disabled via ENABLE_VOICE_CHANNELS=false)
+const voiceChannelTools = [
+  "discord_create_voice_channel",
+  "discord_delete_voice_channel",
+  "discord_edit_voice_channel",
+  "discord_list_voice_channels",
+  "discord_get_voice_channel_info",
+  "discord_move_user_to_voice_channel",
+];
+
+// Direct Message Tools (can be disabled via ENABLE_DIRECT_MESSAGES=false)
+const directMessageTools = [
+  "discord_send_direct_message",
+  "discord_get_direct_messages",
+];
+
+// Server Management Tools (can be disabled via ENABLE_SERVER_MANAGEMENT=false)
+const serverManagementTools = [
+  "discord_update_server_settings",
+  "discord_update_server_engagement",
+  "discord_update_welcome_screen",
+  "discord_create_emoji",
+  "discord_delete_emoji",
+  "discord_list_emojis",
+  "discord_create_sticker",
+  "discord_delete_sticker",
+  "discord_list_stickers",
+  "discord_create_invite",
+  "discord_delete_invite",
+  "discord_list_invites",
+  "discord_list_integrations",
+  "discord_delete_integration",
+  "discord_create_soundboard_sound",
+  "discord_delete_soundboard_sound",
+  "discord_list_soundboard_sounds",
+];
+
+// Role-Based Access Control Tools (can be disabled via ENABLE_RBAC=false)
+const rbacTools = [
+  "discord_create_role",
+  "discord_edit_role",
+  "discord_delete_role",
+  "discord_list_roles",
+  "discord_get_role_permissions",
+];
+
+// Content Management Tools (can be disabled via ENABLE_CONTENT_MANAGEMENT=false)
+const contentManagementTools = [
+  "discord_read_messages",
+  "discord_add_reaction",
+  "discord_add_multiple_reactions",
+  "discord_remove_reaction",
+  "discord_delete_message",
+];
+
+// Filter tools based on feature flags
+function getFilteredTools() {
+  const enabledToolNames = new Set<string>();
+
+  // Always include core tools (login, basic channel/server operations)
+  baseTools.forEach((tool) => {
+    const toolName = tool.name;
+
+    // Check if tool should be filtered based on feature flags
+    if (
+      (!config.ENABLE_USER_MANAGEMENT &&
+        userManagementTools.includes(toolName)) ||
+      (!config.ENABLE_VOICE_CHANNELS && voiceChannelTools.includes(toolName)) ||
+      (!config.ENABLE_DIRECT_MESSAGES &&
+        directMessageTools.includes(toolName)) ||
+      (!config.ENABLE_SERVER_MANAGEMENT &&
+        serverManagementTools.includes(toolName)) ||
+      (!config.ENABLE_RBAC && rbacTools.includes(toolName)) ||
+      (!config.ENABLE_CONTENT_MANAGEMENT &&
+        contentManagementTools.includes(toolName))
+    ) {
+      // Tool is disabled by feature flag
+      if (process.env.DEBUG_TOKEN) {
+        info(`Tool filtered out due to feature flags: ${toolName}`);
+      }
+      return;
+    }
+
+    enabledToolNames.add(toolName);
+  });
+
+  // Filter the tools array based on enabled tools
+  const filteredTools = baseTools.filter((tool) =>
+    enabledToolNames.has(tool.name),
+  );
+
+  if (process.env.DEBUG_TOKEN) {
+    info(
+      `Feature flags applied - Total tools: ${baseTools.length}, Enabled tools: ${filteredTools.length}`,
+    );
+    info(
+      `Feature flag status: USER_MGMT=${config.ENABLE_USER_MANAGEMENT}, VOICE=${config.ENABLE_VOICE_CHANNELS}, DM=${config.ENABLE_DIRECT_MESSAGES}, SERVER=${config.ENABLE_SERVER_MANAGEMENT}, RBAC=${config.ENABLE_RBAC}, CONTENT=${config.ENABLE_CONTENT_MANAGEMENT}`,
+    );
+  }
+
+  return filteredTools;
+}
+
+// Export the filtered tool list
+export const toolList = getFilteredTools();
