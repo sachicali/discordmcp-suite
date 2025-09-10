@@ -18,14 +18,7 @@
  */
 
 import { EventEmitter } from "events";
-import {
-  Client,
-  Guild,
-  GuildMember,
-  Role,
-  TextChannel,
-  PermissionsBitField,
-} from "discord.js";
+import { Client, Guild, TextChannel, PermissionsBitField } from "discord.js";
 import { info, error } from "../logger.js";
 
 /**
@@ -893,7 +886,7 @@ export class SecurityAuditService extends EventEmitter {
    * Assess compliance with security standards
    */
   private assessCompliance(
-    guild: Guild,
+    _guild: Guild,
     vulnerabilities: SecurityVulnerability[],
   ): Record<
     ComplianceStandard,
@@ -903,7 +896,14 @@ export class SecurityAuditService extends EventEmitter {
       missing_requirements: string[];
     }
   > {
-    const result: Record<ComplianceStandard, any> = {};
+    const result = {} as Record<
+      ComplianceStandard,
+      {
+        compliant: boolean;
+        score: number;
+        missing_requirements: string[];
+      }
+    >;
 
     for (const standard of this.config.compliance_standards) {
       const relevantVulns = vulnerabilities.filter((v) =>
@@ -1028,6 +1028,8 @@ export class SecurityAuditService extends EventEmitter {
 
     const publicChannels = guild.channels.cache.filter((channel) => {
       if (!channel.isTextBased()) return false;
+      // Check if channel has permission overwrites (not all channel types do)
+      if (!("permissionOverwrites" in channel)) return true;
       const overwrites = channel.permissionOverwrites.cache.get(guild.id);
       return (
         !overwrites ||
@@ -1211,57 +1213,6 @@ export class SecurityAuditService extends EventEmitter {
   }
 
   /**
-   * Assess compliance with security standards
-   */
-  private assessCompliance(
-    _guild: Guild,
-    vulnerabilities: SecurityVulnerability[],
-  ): Record<
-    ComplianceStandard,
-    {
-      compliant: boolean;
-      score: number;
-      missing_requirements: string[];
-    }
-  > {
-    const result = {} as Record<
-      ComplianceStandard,
-      {
-        compliant: boolean;
-        score: number;
-        missing_requirements: string[];
-      }
-    >;
-
-    for (const standard of this.config.compliance_standards) {
-      const relevantVulns = vulnerabilities.filter((v) =>
-        v.compliance_impact?.includes(standard),
-      );
-
-      const criticalVulns = relevantVulns.filter(
-        (v) => v.severity === SecuritySeverity.CRITICAL,
-      ).length;
-      const highVulns = relevantVulns.filter(
-        (v) => v.severity === SecuritySeverity.HIGH,
-      ).length;
-
-      const compliant = criticalVulns === 0 && highVulns <= 2;
-      const score = Math.max(
-        0,
-        100 - criticalVulns * 40 - highVulns * 20 - relevantVulns.length * 5,
-      );
-
-      result[standard] = {
-        compliant,
-        score,
-        missing_requirements: relevantVulns.map((v) => v.title),
-      };
-    }
-
-    return result;
-  }
-
-  /**
    * Mark vulnerability as false positive
    */
   markFalsePositive(guildId: string, vulnerabilityId: string): boolean {
@@ -1327,7 +1278,13 @@ export class SecurityAuditService extends EventEmitter {
       average_security_score: Math.round(avgScore),
       total_vulnerabilities: totalVulns,
       vulnerabilities_by_severity: vulnsBySeverity,
-      compliance_overview: {}, // Would calculate compliance stats
+      compliance_overview: {
+        [ComplianceStandard.BASIC_SECURITY]: 0,
+        [ComplianceStandard.ENHANCED_PRIVACY]: 0,
+        [ComplianceStandard.CORPORATE_SECURITY]: 0,
+        [ComplianceStandard.EDUCATIONAL_SAFETY]: 0,
+        [ComplianceStandard.COMMUNITY_GUIDELINES]: 0,
+      } as Record<ComplianceStandard, number>, // Would calculate compliance stats
       recent_audits: recentReports.map((report) => ({
         guild_name: report.guild_name,
         audit_date: report.audit_date,

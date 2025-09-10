@@ -590,15 +590,19 @@ export class BulkOperationsService extends EventEmitter {
         fetchOptions.after = filter.after;
       }
 
-      const fetched = await channel.messages.fetch(fetchOptions);
+      const fetched = (await channel.messages.fetch(
+        fetchOptions,
+      )) as unknown as Collection<string, Message>;
       if (fetched.size === 0) break;
 
-      const filteredMessages = fetched.filter((message) =>
+      // Filter messages and convert to array - fetched is a Collection
+      const messageArray = Array.from(fetched.values());
+      const filteredMessages = messageArray.filter((message) =>
         this.matchesMessageFilter(message, filter),
       );
-      messages.push(...Array.from(filteredMessages.values()));
+      messages.push(...filteredMessages);
 
-      lastMessageId = Array.from(fetched.values()).pop()?.id;
+      lastMessageId = messageArray[messageArray.length - 1]?.id;
 
       if (fetched.size < limit) break;
     }
@@ -826,58 +830,6 @@ export class BulkOperationsService extends EventEmitter {
       });
       this.updateProgress(operationId, {});
     }
-  }
-
-  /**
-   * Get messages to delete based on filter
-   */
-  private async getMessagesToDelete(
-    guild: Guild,
-    config: BulkOperationConfig,
-  ): Promise<Message[]> {
-    const channelId = config.target_ids![0];
-    const channel = guild.channels.cache.get(channelId) as TextChannel;
-
-    if (!channel || !channel.isTextBased()) {
-      throw new Error(`Channel ${channelId} not found or not a text channel`);
-    }
-
-    const messages: Message[] = [];
-    const filter = config.filters as MessageFilter;
-
-    let lastMessageId: string | undefined;
-    const limit = 100; // Discord API limit
-
-    while (messages.length < 10000) {
-      // Reasonable limit
-      const fetchOptions: any = { limit };
-
-      if (filter?.before) {
-        fetchOptions.before = filter.before;
-      } else if (lastMessageId) {
-        fetchOptions.before = lastMessageId;
-      }
-
-      if (filter?.after) {
-        fetchOptions.after = filter.after;
-      }
-
-      const fetched = await channel.messages.fetch(fetchOptions);
-      if (fetched.size === 0) break;
-
-      // Filter messages based on criteria
-      const messageArray = Array.from(fetched.values());
-      const filteredMessages = messageArray.filter((message) =>
-        this.matchesMessageFilter(message, filter),
-      );
-      messages.push(...filteredMessages);
-
-      lastMessageId = messageArray[messageArray.length - 1]?.id;
-
-      if (fetched.size < limit) break;
-    }
-
-    return messages.reverse(); // Process oldest first
   }
 
   /**
