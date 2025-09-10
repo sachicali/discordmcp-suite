@@ -60,7 +60,8 @@ export class ConfigManager {
         const smitheryToken =
           process.env.discordToken ||
           process.env.DISCORDTOKEN ||
-          process.env.token;
+          process.env.token ||
+          process.env.BOT_TOKEN;
         if (smitheryToken) {
           info(
             `Discord token found via Smithery.ai config (length: ${smitheryToken.length})`,
@@ -218,6 +219,16 @@ export class ConfigManager {
 
     if (!this.config.DISCORD_TOKEN) {
       missing.push("DISCORD_TOKEN - Required for Discord authentication");
+    }
+
+    // Check for cloud deployment requirements
+    if (process.env.NODE_ENV === "production") {
+      if (!this.config.DISCORD_TOKEN) {
+        missing.push("CRITICAL: DISCORD_TOKEN must be set in production");
+      }
+      if (!process.env.PORT && !process.env.HTTP_PORT) {
+        missing.push("PORT or HTTP_PORT should be set for cloud deployment");
+      }
     }
 
     // Check for feature-specific requirements

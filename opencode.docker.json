@@ -19,7 +19,7 @@
         "ENABLE_DIRECT_MESSAGES=1",
         "-p",
         "8080:8080",
-        "barryy625/mcp-discord:latest",
+        "mcp-discord:latest",
         "--transport",
         "http",
         "--port",

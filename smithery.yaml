@@ -15,7 +15,14 @@ startCommand:
    exampleConfig:
      discordToken: YOUR_DISCORD_BOT_TOKEN
    env:
+     # Primary method - standard template
      DISCORD_TOKEN: "{{discordToken}}"
+     # Alternative patterns for Smithery.ai compatibility
+     discordToken: "{{discordToken}}"
+     DISCORDTOKEN: "{{discordToken}}"
+     TOKEN: "{{discordToken}}"
+     BOT_TOKEN: "{{discordToken}}"
+     # Debug flag
      DEBUG_TOKEN: "true"
 
 build:
