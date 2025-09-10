@@ -59,7 +59,8 @@ export class ConfigManager {
         const envVars = Object.keys(process.env).filter(
           (key) =>
             key.toLowerCase().includes("discord") ||
-            key.toLowerCase().includes("token"),
+            key.toLowerCase().includes("token") ||
+            key.toLowerCase().includes("debug"),
         );
         if (envVars.length > 0) {
           info(
@@ -67,6 +68,11 @@ export class ConfigManager {
           );
         } else {
           info("No Discord-related environment variables found");
+        }
+
+        // Debug: Log DEBUG_TOKEN if present
+        if (process.env.DEBUG_TOKEN) {
+          info(`DEBUG_TOKEN is set to: ${process.env.DEBUG_TOKEN}`);
         }
 
         return null;
