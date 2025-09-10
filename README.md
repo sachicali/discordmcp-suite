@@ -9,6 +9,8 @@
 
 A comprehensive Discord MCP (Model Context Protocol) server that enables AI assistants to interact with the Discord platform through **73 enterprise-level management tools**. Built with TypeScript, featuring advanced security, automated moderation, bulk operations, health monitoring, and production-ready architecture.
 
+_Latest version: v2.3.0 - Now with enhanced Docker support and security fixes!_
+
 ## Overview
 
 MCP-Discord provides comprehensive Discord integration with both basic and advanced features:
