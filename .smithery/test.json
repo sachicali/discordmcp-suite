@@ -1,0 +1,32 @@
+{
+  "name": "Discord MCP Server - Quick Test",
+  "description": "Quick validation test for Discord MCP server tool discovery",
+  "version": "1.0.0",
+  "tests": [
+    {
+      "name": "Health Check",
+      "type": "health",
+      "endpoint": "/health",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Tool Count Validation",
+      "type": "tool_discovery",
+      "expectedToolCount": 70,
+      "validateSchemas": true
+    },
+    {
+      "name": "Schema Structure Test",
+      "type": "schema_validation",
+      "tool": "discord_send",
+      "expectedSchema": {
+        "type": "object",
+        "properties": {
+          "channelId": { "type": "string" },
+          "message": { "type": "string" }
+        },
+        "required": ["channelId", "message"]
+      }
+    }
+  ]
+}
