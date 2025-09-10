@@ -2,6 +2,7 @@ export const toolList = [
   {
     name: "discord_create_category",
     description: "Creates a new category in a Discord server.",
+    displayName: "📁 Create Category",
     inputSchema: {
       type: "object",
       properties: {
@@ -16,6 +17,7 @@ export const toolList = [
   {
     name: "discord_edit_category",
     description: "Edits an existing Discord category (name and position).",
+    displayName: "✏️ Edit Category",
     inputSchema: {
       type: "object",
       properties: {
@@ -30,6 +32,7 @@ export const toolList = [
   {
     name: "discord_delete_category",
     description: "Deletes a Discord category by ID.",
+    displayName: "🗑️ Delete Category",
     inputSchema: {
       type: "object",
       properties: {
@@ -42,6 +45,7 @@ export const toolList = [
   {
     name: "discord_login",
     description: "Logs in to Discord using the configured token",
+    displayName: "🔐 Discord Login",
     inputSchema: {
       type: "object",
       properties: {
@@ -53,6 +57,7 @@ export const toolList = [
   {
     name: "discord_set_token",
     description: "Sets and saves a Discord bot token for authentication",
+    displayName: "🔑 Set Discord Token",
     inputSchema: {
       type: "object",
       properties: {
@@ -64,6 +69,7 @@ export const toolList = [
   {
     name: "discord_validate_token",
     description: "Validates the format and basic structure of a Discord token",
+    displayName: "✅ Validate Token",
     inputSchema: {
       type: "object",
       properties: {},
@@ -74,6 +80,7 @@ export const toolList = [
     name: "discord_login_status",
     description:
       "Shows current login status, configuration, and health information",
+    displayName: "📊 Login Status",
     inputSchema: {
       type: "object",
       properties: {},
@@ -83,6 +90,7 @@ export const toolList = [
   {
     name: "discord_logout",
     description: "Logs out from Discord and disconnects the client",
+    displayName: "🚪 Discord Logout",
     inputSchema: {
       type: "object",
       properties: {},
@@ -92,6 +100,7 @@ export const toolList = [
   {
     name: "discord_update_config",
     description: "Updates server configuration settings at runtime",
+    displayName: "⚙️ Update Config",
     inputSchema: {
       type: "object",
       properties: {
@@ -113,6 +122,7 @@ export const toolList = [
     name: "discord_health_check",
     description:
       "Performs a comprehensive health check of the Discord MCP server",
+    displayName: "🩺 Health Check",
     inputSchema: {
       type: "object",
       properties: {},
@@ -122,6 +132,7 @@ export const toolList = [
   {
     name: "discord_send",
     description: "Sends a message to a specified Discord text channel",
+    displayName: "💬 Send Message",
     inputSchema: {
       type: "object",
       properties: {
@@ -135,6 +146,7 @@ export const toolList = [
     name: "discord_get_forum_channels",
     description:
       "Lists all forum channels in a specified Discord server (guild)",
+    displayName: "📋 List Forum Channels",
     inputSchema: {
       type: "object",
       properties: {
@@ -147,6 +159,7 @@ export const toolList = [
     name: "discord_create_forum_post",
     description:
       "Creates a new post in a Discord forum channel with optional tags",
+    displayName: "📝 Create Forum Post",
     inputSchema: {
       type: "object",
       properties: {
@@ -164,6 +177,7 @@ export const toolList = [
   {
     name: "discord_get_forum_post",
     description: "Retrieves details about a forum post including its messages",
+    displayName: "📖 Get Forum Post",
     inputSchema: {
       type: "object",
       properties: {
@@ -175,6 +189,7 @@ export const toolList = [
   {
     name: "discord_reply_to_forum",
     description: "Adds a reply to an existing forum post or thread",
+    displayName: "💬 Reply to Forum",
     inputSchema: {
       type: "object",
       properties: {
@@ -188,6 +203,7 @@ export const toolList = [
     name: "discord_create_text_channel",
     description:
       "Creates a new text channel in a Discord server with an optional topic",
+    displayName: "💬 Create Text Channel",
     inputSchema: {
       type: "object",
       properties: {
@@ -201,6 +217,7 @@ export const toolList = [
   {
     name: "discord_create_forum_channel",
     description: "Creates a new forum channel in a Discord server",
+    displayName: "📋 Create Forum Channel",
     inputSchema: {
       type: "object",
       properties: {
@@ -216,6 +233,7 @@ export const toolList = [
   {
     name: "discord_edit_channel",
     description: "Edits an existing Discord channel (name, topic, category)",
+    displayName: "✏️ Edit Channel",
     inputSchema: {
       type: "object",
       properties: {
@@ -231,6 +249,7 @@ export const toolList = [
   {
     name: "discord_delete_channel",
     description: "Deletes a Discord channel with an optional reason",
+    displayName: "🗑️ Delete Channel",
     inputSchema: {
       type: "object",
       properties: {
@@ -244,6 +263,7 @@ export const toolList = [
     name: "discord_read_messages",
     description:
       "Retrieves messages from a Discord text channel with a configurable limit",
+    displayName: "📖 Read Messages",
     inputSchema: {
       type: "object",
       properties: {
@@ -262,6 +282,7 @@ export const toolList = [
     name: "discord_get_server_info",
     description:
       "Retrieves detailed information about a Discord server including channels and member count",
+    displayName: "🏰 Get Server Info",
     inputSchema: {
       type: "object",
       properties: {
@@ -273,6 +294,7 @@ export const toolList = [
   {
     name: "discord_list_servers",
     description: "Lists all Discord servers that the bot has access to",
+    displayName: "🏰 List Servers",
     inputSchema: {
       type: "object",
       properties: {},
@@ -283,6 +305,7 @@ export const toolList = [
     name: "discord_create_channel_under_category",
     description:
       "Creates a new channel (text, voice, or forum) and places it under a specific category",
+    displayName: "📁➕ Create Channel in Category",
     inputSchema: {
       type: "object",
       properties: {
@@ -302,6 +325,7 @@ export const toolList = [
   {
     name: "discord_move_channel_to_category",
     description: "Moves an existing channel to a different category",
+    displayName: "📁↔️ Move Channel to Category",
     inputSchema: {
       type: "object",
       properties: {
@@ -315,6 +339,7 @@ export const toolList = [
   {
     name: "discord_add_reaction",
     description: "Adds an emoji reaction to a specific Discord message",
+    displayName: "😀 Add Reaction",
     inputSchema: {
       type: "object",
       properties: {
@@ -328,6 +353,7 @@ export const toolList = [
   {
     name: "discord_add_multiple_reactions",
     description: "Adds multiple emoji reactions to a Discord message at once",
+    displayName: "😀✨ Add Multiple Reactions",
     inputSchema: {
       type: "object",
       properties: {
@@ -344,6 +370,7 @@ export const toolList = [
   {
     name: "discord_remove_reaction",
     description: "Removes a specific emoji reaction from a Discord message",
+    displayName: "🚫 Remove Reaction",
     inputSchema: {
       type: "object",
       properties: {
@@ -358,6 +385,7 @@ export const toolList = [
   {
     name: "discord_delete_forum_post",
     description: "Deletes a forum post or thread with an optional reason",
+    displayName: "🗑️ Delete Forum Post",
     inputSchema: {
       type: "object",
       properties: {
@@ -370,6 +398,7 @@ export const toolList = [
   {
     name: "discord_delete_message",
     description: "Deletes a specific message from a Discord text channel",
+    displayName: "🗑️ Delete Message",
     inputSchema: {
       type: "object",
       properties: {
@@ -383,6 +412,7 @@ export const toolList = [
   {
     name: "discord_create_webhook",
     description: "Creates a new webhook for a Discord channel",
+    displayName: "🪝 Create Webhook",
     inputSchema: {
       type: "object",
       properties: {
@@ -397,6 +427,7 @@ export const toolList = [
   {
     name: "discord_send_webhook_message",
     description: "Sends a message to a Discord channel using a webhook",
+    displayName: "🪝💬 Send Webhook Message",
     inputSchema: {
       type: "object",
       properties: {
@@ -413,6 +444,7 @@ export const toolList = [
   {
     name: "discord_edit_webhook",
     description: "Edits an existing webhook for a Discord channel",
+    displayName: "🪝✏️ Edit Webhook",
     inputSchema: {
       type: "object",
       properties: {
@@ -429,6 +461,7 @@ export const toolList = [
   {
     name: "discord_delete_webhook",
     description: "Deletes an existing webhook for a Discord channel",
+    displayName: "🪝🗑️ Delete Webhook",
     inputSchema: {
       type: "object",
       properties: {
@@ -442,6 +475,7 @@ export const toolList = [
   {
     name: "discord_list_webhooks",
     description: "Lists all webhooks for a Discord server or specific channel",
+    displayName: "🪝📋 List Webhooks",
     inputSchema: {
       type: "object",
       properties: {
@@ -454,6 +488,7 @@ export const toolList = [
   {
     name: "discord_get_user_info",
     description: "Retrieves information about a Discord user",
+    displayName: "👤 Get User Info",
     inputSchema: {
       type: "object",
       properties: {
@@ -466,6 +501,7 @@ export const toolList = [
     name: "discord_get_guild_member",
     description:
       "Retrieves information about a guild member including roles and permissions",
+    displayName: "👥 Get Guild Member",
     inputSchema: {
       type: "object",
       properties: {
@@ -478,6 +514,7 @@ export const toolList = [
   {
     name: "discord_list_guild_members",
     description: "Lists all members in a Discord server",
+    displayName: "👥📋 List Guild Members",
     inputSchema: {
       type: "object",
       properties: {
@@ -489,6 +526,7 @@ export const toolList = [
   {
     name: "discord_add_role_to_member",
     description: "Adds a role to a guild member",
+    displayName: "🏷️➕ Add Role to Member",
     inputSchema: {
       type: "object",
       properties: {
@@ -503,6 +541,7 @@ export const toolList = [
   {
     name: "discord_remove_role_from_member",
     description: "Removes a role from a guild member",
+    displayName: "🏷️➖ Remove Role from Member",
     inputSchema: {
       type: "object",
       properties: {
@@ -517,6 +556,7 @@ export const toolList = [
   {
     name: "discord_kick_member",
     description: "Kicks a member from the Discord server",
+    displayName: "👢 Kick Member",
     inputSchema: {
       type: "object",
       properties: {
@@ -530,6 +570,7 @@ export const toolList = [
   {
     name: "discord_ban_member",
     description: "Bans a member from the Discord server",
+    displayName: "🔨 Ban Member",
     inputSchema: {
       type: "object",
       properties: {
@@ -549,6 +590,7 @@ export const toolList = [
   {
     name: "discord_unban_member",
     description: "Unbans a user from the Discord server",
+    displayName: "🔓 Unban Member",
     inputSchema: {
       type: "object",
       properties: {
@@ -562,6 +604,7 @@ export const toolList = [
   {
     name: "discord_timeout_member",
     description: "Times out or removes timeout from a guild member",
+    displayName: "⏰ Timeout Member",
     inputSchema: {
       type: "object",
       properties: {
@@ -577,6 +620,7 @@ export const toolList = [
     name: "discord_create_role",
     description:
       "Creates a new role in a Discord server with specified permissions",
+    displayName: "🏷️ Create Role",
     inputSchema: {
       type: "object",
       properties: {
@@ -597,6 +641,7 @@ export const toolList = [
   {
     name: "discord_edit_role",
     description: "Edits an existing role's properties and permissions",
+    displayName: "🏷️✏️ Edit Role",
     inputSchema: {
       type: "object",
       properties: {
@@ -617,6 +662,7 @@ export const toolList = [
   {
     name: "discord_delete_role",
     description: "Deletes a role from the Discord server",
+    displayName: "🏷️🗑️ Delete Role",
     inputSchema: {
       type: "object",
       properties: {
@@ -629,6 +675,7 @@ export const toolList = [
   {
     name: "discord_list_roles",
     description: "Lists all roles in a Discord server with their properties",
+    displayName: "🏷️📋 List Roles",
     inputSchema: {
       type: "object",
       properties: {
@@ -640,6 +687,7 @@ export const toolList = [
   {
     name: "discord_get_role_permissions",
     description: "Gets the permissions for a specific role",
+    displayName: "🏷️🔍 Get Role Permissions",
     inputSchema: {
       type: "object",
       properties: {
@@ -651,6 +699,7 @@ export const toolList = [
   {
     name: "discord_send_direct_message",
     description: "Sends a direct message to a Discord user",
+    displayName: "📧 Send Direct Message",
     inputSchema: {
       type: "object",
       properties: {
@@ -663,6 +712,7 @@ export const toolList = [
   {
     name: "discord_get_direct_messages",
     description: "Retrieves direct message history with a specific user",
+    displayName: "📧📖 Get Direct Messages",
     inputSchema: {
       type: "object",
       properties: {
@@ -681,6 +731,7 @@ export const toolList = [
     name: "discord_update_server_settings",
     description:
       "Updates various server settings like name, description, icon, etc.",
+    displayName: "🏰⚙️ Update Server Settings",
     inputSchema: {
       type: "object",
       properties: {
@@ -714,6 +765,7 @@ export const toolList = [
     name: "discord_update_server_engagement",
     description:
       "Updates server engagement settings like system messages and rules",
+    displayName: "🏰🎯 Update Server Engagement",
     inputSchema: {
       type: "object",
       properties: {
@@ -734,6 +786,7 @@ export const toolList = [
   {
     name: "discord_update_welcome_screen",
     description: "Updates the server's welcome screen settings",
+    displayName: "🏰🎉 Update Welcome Screen",
     inputSchema: {
       type: "object",
       properties: {
@@ -761,6 +814,7 @@ export const toolList = [
   {
     name: "discord_create_emoji",
     description: "Creates a new emoji for the server",
+    displayName: "😀➕ Create Emoji",
     inputSchema: {
       type: "object",
       properties: {
@@ -779,6 +833,7 @@ export const toolList = [
   {
     name: "discord_delete_emoji",
     description: "Deletes an emoji from the server",
+    displayName: "😀🗑️ Delete Emoji",
     inputSchema: {
       type: "object",
       properties: {
@@ -792,6 +847,7 @@ export const toolList = [
   {
     name: "discord_list_emojis",
     description: "Lists all emojis in the server",
+    displayName: "😀📋 List Emojis",
     inputSchema: {
       type: "object",
       properties: {
@@ -803,6 +859,7 @@ export const toolList = [
   {
     name: "discord_create_sticker",
     description: "Creates a new sticker for the server",
+    displayName: "🏷️➕ Create Sticker",
     inputSchema: {
       type: "object",
       properties: {
@@ -819,6 +876,7 @@ export const toolList = [
   {
     name: "discord_delete_sticker",
     description: "Deletes a sticker from the server",
+    displayName: "🏷️🗑️ Delete Sticker",
     inputSchema: {
       type: "object",
       properties: {
@@ -832,6 +890,7 @@ export const toolList = [
   {
     name: "discord_list_stickers",
     description: "Lists all stickers in the server",
+    displayName: "🏷️📋 List Stickers",
     inputSchema: {
       type: "object",
       properties: {
@@ -843,6 +902,7 @@ export const toolList = [
   {
     name: "discord_create_invite",
     description: "Creates an invite for a channel",
+    displayName: "🔗 Create Invite",
     inputSchema: {
       type: "object",
       properties: {
@@ -861,6 +921,7 @@ export const toolList = [
   {
     name: "discord_delete_invite",
     description: "Deletes an invite by code",
+    displayName: "🔗🗑️ Delete Invite",
     inputSchema: {
       type: "object",
       properties: {
@@ -873,6 +934,7 @@ export const toolList = [
   {
     name: "discord_list_invites",
     description: "Lists all invites for the server",
+    displayName: "🔗📋 List Invites",
     inputSchema: {
       type: "object",
       properties: {
@@ -884,6 +946,7 @@ export const toolList = [
   {
     name: "discord_list_integrations",
     description: "Lists all integrations for the server",
+    displayName: "🔌📋 List Integrations",
     inputSchema: {
       type: "object",
       properties: {
@@ -895,6 +958,7 @@ export const toolList = [
   {
     name: "discord_delete_integration",
     description: "Deletes an integration from the server",
+    displayName: "🔌🗑️ Delete Integration",
     inputSchema: {
       type: "object",
       properties: {
@@ -908,6 +972,7 @@ export const toolList = [
   {
     name: "discord_create_soundboard_sound",
     description: "Creates a soundboard sound (not yet supported by Discord.js)",
+    displayName: "🔊➕ Create Soundboard Sound",
     inputSchema: {
       type: "object",
       properties: {
@@ -925,6 +990,7 @@ export const toolList = [
   {
     name: "discord_delete_soundboard_sound",
     description: "Deletes a soundboard sound (not yet supported by Discord.js)",
+    displayName: "🔊🗑️ Delete Soundboard Sound",
     inputSchema: {
       type: "object",
       properties: {
@@ -939,6 +1005,7 @@ export const toolList = [
     name: "discord_list_soundboard_sounds",
     description:
       "Lists all soundboard sounds (not yet supported by Discord.js)",
+    displayName: "🔊📋 List Soundboard Sounds",
     inputSchema: {
       type: "object",
       properties: {

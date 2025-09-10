@@ -1,4 +1,24 @@
 #!/usr/bin/env node
+
+/**
+ * MCP Discord Server - Main Entry Point
+ *
+ * This is the main entry point for the MCP Discord server that provides
+ * comprehensive Discord integration through 58+ enterprise-level management tools.
+ *
+ * Features:
+ * - Discord bot authentication and management
+ * - Channel and message management
+ * - User and role management
+ * - Voice channel controls
+ * - Webhook management
+ * - Server administration tools
+ *
+ * @author MCP Discord Team
+ * @version 1.4.0
+ * @since 1.0.0
+ */
+
 import { Client, GatewayIntentBits } from "discord.js";
 import { config as dotenvConfig } from "dotenv";
 import { DiscordMCPServer } from "./server.js";
@@ -54,13 +74,13 @@ const autoLogin = async () => {
   try {
     info("Attempting to log in to Discord...");
 
-    // Add timeout to login process
-    const loginTimeout = 15000; // 15 seconds for login
+    // Add timeout to login process - reduced for cloud deployment
+    const loginTimeout = 8000; // 8 seconds for login
     const loginPromise = client.login(token);
 
     const timeoutPromise = new Promise((_, reject) => {
       setTimeout(() => {
-        reject(new Error("Discord login timeout after 15 seconds"));
+        reject(new Error("Discord login timeout after 8 seconds"));
       }, loginTimeout);
     });
 
@@ -70,8 +90,8 @@ const autoLogin = async () => {
     if (!client.isReady()) {
       await new Promise<void>((resolve, reject) => {
         const timeout = setTimeout(() => {
-          reject(new Error("Discord client ready timeout after 15 seconds"));
-        }, 15000); // Reduced from 30 to 15 seconds
+          reject(new Error("Discord client ready timeout after 8 seconds"));
+        }, 8000); // Reduced for cloud deployment
 
         client.once("ready", () => {
           clearTimeout(timeout);
@@ -143,8 +163,8 @@ const transport = initializeTransport();
 const mcpServer = new DiscordMCPServer(client, transport);
 
 try {
-  // Add startup timeout for cloud deployments
-  const startupTimeout = 30000; // 30 seconds
+  // Add startup timeout for cloud deployments - reduced for faster startup
+  const startupTimeout = 10000; // 10 seconds
   const startupPromise = mcpServer.start();
 
   const timeoutPromise = new Promise((_, reject) => {

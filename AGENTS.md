@@ -2,7 +2,7 @@
 
 ## Overview
 
-The MCP Discord Server is a comprehensive Discord integration that provides **58 enterprise-level management tools** for complete Discord server administration. Built with TypeScript and featuring advanced security, error handling, and production-ready architecture.
+The MCP Discord Server is a comprehensive Discord integration that provides **29 enterprise-level management tools** for complete Discord server administration. Built with TypeScript and featuring advanced security, error handling, and production-ready architecture.
 
 ## Build Commands
 
