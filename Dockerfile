@@ -1,8 +1,12 @@
 # FastMCP Cloud Deployable Discord MCP Server
 FROM node:lts-alpine
 
-# Install dumb-init and wget for proper signal handling and health checks
-RUN apk add --no-cache dumb-init wget
+# Install dumb-init, wget for health checks, and Bun as package manager
+RUN apk add --no-cache dumb-init wget && \
+    wget -q https://bun.sh/install -O install.sh && \
+    chmod +x install.sh && \
+    ./install.sh && \
+    rm install.sh
 
 # Create non-root user for security
 RUN addgroup -g 1001 -S nodejs && \
@@ -12,25 +16,26 @@ RUN addgroup -g 1001 -S nodejs && \
 WORKDIR /app
 
 # Copy package files first for better caching
-COPY package.json package-lock.json ./
+COPY package.json bun.lock ./
 
 # Install all dependencies (including dev dependencies for build)
-RUN npm ci --ignore-scripts && \
-    npm cache clean --force
+RUN ~/.bun/bin/bun install --frozen-lockfile
 
 # Copy source code
 COPY . .
 
 # Build the TypeScript code
-RUN npm run build
+RUN ~/.bun/bin/bun run build
 
 # Remove dev dependencies and clean cache
-RUN npm prune --production && \
-    npm cache clean --force
+RUN ~/.bun/bin/bun install --frozen-lockfile --production
 
 # Change ownership to non-root user
 RUN chown -R mcpuser:nodejs /app
 USER mcpuser
+
+# Add bun to PATH for runtime
+ENV PATH="/home/mcpuser/.bun/bin:$PATH"
 
 # Add simple health check
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
