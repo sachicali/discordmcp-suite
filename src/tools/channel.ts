@@ -637,7 +637,7 @@ export async function createChannelUnderCategoryHandler(
       };
     }
 
-    const guild = context.client.guilds.cache.get(guildId);
+    const guild = await context.client.guilds.fetch(guildId);
     if (!guild) {
       return {
         content: [
@@ -647,8 +647,8 @@ export async function createChannelUnderCategoryHandler(
       };
     }
 
-    const category = guild.channels.cache.get(categoryId);
-    if (!category || category.type !== 4) {
+    const category = await guild.channels.fetch(categoryId);
+    if (!category || category.type !== ChannelType.GuildCategory) {
       return {
         content: [
           { type: "text", text: `Category with ID ${categoryId} not found.` },
@@ -662,7 +662,7 @@ export async function createChannelUnderCategoryHandler(
       case "text":
         channel = await guild.channels.create({
           name: channelName,
-          type: 0, // TEXT
+          type: ChannelType.GuildText,
           topic: topic,
           parent: categoryId,
           reason: reason,
@@ -671,7 +671,7 @@ export async function createChannelUnderCategoryHandler(
       case "voice":
         channel = await guild.channels.create({
           name: channelName,
-          type: 2, // VOICE
+          type: ChannelType.GuildVoice,
           parent: categoryId,
           reason: reason,
         });
@@ -679,7 +679,7 @@ export async function createChannelUnderCategoryHandler(
       case "forum":
         channel = await guild.channels.create({
           name: channelName,
-          type: 15, // FORUM
+          type: ChannelType.GuildForum,
           topic: topic,
           parent: categoryId,
           reason: reason,
@@ -723,7 +723,7 @@ export async function moveChannelToCategoryHandler(
       };
     }
 
-    const channel = context.client.channels.cache.get(channelId);
+    const channel = await context.client.channels.fetch(channelId);
     if (!channel) {
       return {
         content: [
@@ -734,7 +734,7 @@ export async function moveChannelToCategoryHandler(
     }
 
     // Check if it's a guild channel (not DM)
-    if (channel.type === 1 || channel.type === 3) {
+    if (channel.type === ChannelType.DM || channel.type === ChannelType.GroupDM) {
       return {
         content: [
           { type: "text", text: "Cannot move DM or group DM channels." },
@@ -745,8 +745,8 @@ export async function moveChannelToCategoryHandler(
 
     // Cast to GuildChannel to access guild property
     const guildChannel = channel as any; // GuildChannel
-    const category = guildChannel.guild.channels.cache.get(categoryId);
-    if (!category || category.type !== 4) {
+    const category = await guildChannel.guild.channels.fetch(categoryId);
+    if (!category || category.type !== ChannelType.GuildCategory) {
       return {
         content: [
           { type: "text", text: `Category with ID ${categoryId} not found.` },

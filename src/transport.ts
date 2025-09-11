@@ -3,41 +3,11 @@ import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import express, { Request, Response } from "express";
 import { toolList } from "./toolList.js";
-import {
-  createToolContext,
-  loginHandler,
-  setTokenHandler,
-  validateTokenHandler,
-  loginStatusHandler,
-  logoutHandler,
-  updateConfigHandler,
-  healthCheckHandler,
-  listServersHandler,
-  sendMessageHandler,
-  getForumChannelsHandler,
-  createForumPostHandler,
-  getForumPostHandler,
-  replyToForumHandler,
-  deleteForumPostHandler,
-  createTextChannelHandler,
-  deleteChannelHandler,
-  readMessagesHandler,
-  getServerInfoHandler,
-  addReactionHandler,
-  addMultipleReactionsHandler,
-  removeReactionHandler,
-  deleteMessageHandler,
-  createWebhookHandler,
-  sendWebhookMessageHandler,
-  editWebhookHandler,
-  deleteWebhookHandler,
-  editCategoryHandler,
-  createCategoryHandler,
-  deleteCategoryHandler,
-} from "./tools/tools.js";
+import { createToolContext } from "./tools/tools.js";
 import { Client, GatewayIntentBits } from "discord.js";
 import { info, error } from "./logger.js";
 import { configManager } from "./config.js";
+import { handleToolCall } from "./toolHandler.js";
 
 export interface MCPTransport {
   start(server: Server): Promise<void>;
@@ -80,7 +50,7 @@ export class StreamableHttpTransport implements MCPTransport {
     // Health check endpoint for cloud deployment and monitoring
     this.app.get("/health", (_req: Request, res: Response) => {
       try {
-        const healthStatus = this.getHealthStatus();
+        const healthStatus = configManager.getHealthStatus();
         const statusCode =
           healthStatus.status === "healthy"
             ? 200
@@ -109,7 +79,7 @@ export class StreamableHttpTransport implements MCPTransport {
     // Readiness probe endpoint for Kubernetes/cloud deployments
     this.app.get("/ready", (_req: Request, res: Response) => {
       try {
-        const healthStatus = this.getHealthStatus();
+        const healthStatus = configManager.getHealthStatus();
         const isReady =
           healthStatus.status === "healthy" ||
           healthStatus.status === "degraded";
@@ -134,30 +104,14 @@ export class StreamableHttpTransport implements MCPTransport {
     // Configuration endpoint for Smithery deployment
     this.app.get("/config", (_req: Request, res: Response) => {
       try {
-        const configSummary = this.getConfigSummary();
-        const missingRequirements = this.getMissingRequirements();
-
-        // Debug: Log environment variables
-        const debugInfo = {
-          has_discord_token: !!process.env.DISCORD_TOKEN,
-          discord_token_length: process.env.DISCORD_TOKEN?.length || 0,
-          has_debug_token: !!process.env.DEBUG_TOKEN,
-          debug_token_value: process.env.DEBUG_TOKEN,
-          all_env_keys: Object.keys(process.env).filter(
-            (key) =>
-              key.toLowerCase().includes("discord") ||
-              key.toLowerCase().includes("token") ||
-              key.toLowerCase().includes("debug"),
-          ),
-        };
-
-        info(`Config endpoint debug: ${JSON.stringify(debugInfo)}`);
+        const configSummary = configManager.getConfigSummary();
+        const missingRequirements = configManager.getMissingRequirements();
+        const isConfigured = configManager.isConfigured();
 
         res.json({
-          configured: this.isConfigured(),
+          configured: isConfigured,
           config: configSummary,
           missing_requirements: missingRequirements,
-          debug: debugInfo,
           timestamp: new Date().toISOString(),
           service: "discordmcp-suite",
         });
@@ -173,14 +127,15 @@ export class StreamableHttpTransport implements MCPTransport {
     // Status endpoint for deployment monitoring
     this.app.get("/status", (_req: Request, res: Response) => {
       try {
-        const healthStatus = this.getHealthStatus();
-        const configSummary = this.getConfigSummary();
+        const healthStatus = configManager.getHealthStatus();
+        const configSummary = configManager.getConfigSummary();
+        const isConfigured = configManager.isConfigured();
 
         res.json({
           service: "discordmcp-suite",
           version: "1.4.0",
           status: healthStatus.status,
-          configured: this.isConfigured(),
+          configured: isConfigured,
           transport: "http",
           port: this.port,
           session_id: this.sessionId,
@@ -278,38 +233,6 @@ export class StreamableHttpTransport implements MCPTransport {
         // Handle each tool method directly
         switch (method) {
           case "initialize":
-            // Handle initialize method for MCP protocol compliance
-            info("=== MCP SERVER INITIALIZATION ===");
-            info(`DISCORD_TOKEN present: ${!!process.env.DISCORD_TOKEN}`);
-            info(
-              `DISCORD_TOKEN length: ${process.env.DISCORD_TOKEN?.length || 0}`,
-            );
-            info(`DEBUG_TOKEN present: ${!!process.env.DEBUG_TOKEN}`);
-            info(`DEBUG_TOKEN value: ${process.env.DEBUG_TOKEN}`);
-            info(`discordToken present: ${!!process.env.discordToken}`);
-            info(
-              `discordToken length: ${process.env.discordToken?.length || 0}`,
-            );
-            info(`DISCORDTOKEN present: ${!!process.env.DISCORDTOKEN}`);
-            info(
-              `DISCORDTOKEN length: ${process.env.DISCORDTOKEN?.length || 0}`,
-            );
-            info(`token present: ${!!process.env.token}`);
-            info(`token length: ${process.env.token?.length || 0}`);
-            info(
-              `All env vars with 'discord' or 'token': ${Object.keys(
-                process.env,
-              )
-                .filter(
-                  (key) =>
-                    key.toLowerCase().includes("discord") ||
-                    key.toLowerCase().includes("token") ||
-                    key.toLowerCase().includes("debug"),
-                )
-                .join(", ")}`,
-            );
-            info("=== END INITIALIZATION LOG ===");
-
             result = {
               protocolVersion: "2025-03-26",
               capabilities: {
@@ -335,25 +258,6 @@ export class StreamableHttpTransport implements MCPTransport {
             });
 
           case "tools/list":
-            // New MCP method name format
-            info("=== TOOLS LIST REQUEST ===");
-            info(`DISCORD_TOKEN present: ${!!process.env.DISCORD_TOKEN}`);
-            info(
-              `DISCORD_TOKEN length: ${process.env.DISCORD_TOKEN?.length || 0}`,
-            );
-            info(`DEBUG_TOKEN present: ${!!process.env.DEBUG_TOKEN}`);
-            info(`discordToken present: ${!!process.env.discordToken}`);
-            info(
-              `discordToken length: ${process.env.discordToken?.length || 0}`,
-            );
-            info(`DISCORDTOKEN present: ${!!process.env.DISCORDTOKEN}`);
-            info(
-              `DISCORDTOKEN length: ${process.env.DISCORDTOKEN?.length || 0}`,
-            );
-            info(`token present: ${!!process.env.token}`);
-            info(`token length: ${process.env.token?.length || 0}`);
-            info("=== END TOOLS LIST LOG ===");
-
             result = { tools: toolList };
             break;
 
@@ -362,109 +266,35 @@ export class StreamableHttpTransport implements MCPTransport {
             result = { tools: toolList };
             break;
 
+          case "tools/call":
+            // Handle new tools/call method format
+            const toolName = params.name;
+            const toolArgs = params.arguments || {};
+
+            // Check if Discord client is logged in for Discord API tools
+            if (
+              toolName !== "discord_login" &&
+              toolName.startsWith("discord_") &&
+              !this.toolContext!.client.isReady()
+            ) {
+              return this.handleDiscordClientNotReady(res, toolName);
+            }
+
+            try {
+              result = await handleToolCall(toolName, toolArgs, this.toolContext!);
+            } catch (toolError) {
+              return this.handleToolError(res, toolError, req.body?.id || null);
+            }
+            break;
+
           case "discord_login":
-            info("=== DISCORD LOGIN ATTEMPT ===");
-            info(
-              `Environment DISCORD_TOKEN present: ${!!process.env.DISCORD_TOKEN}`,
-            );
-            info(
-              `Environment DISCORD_TOKEN length: ${process.env.DISCORD_TOKEN?.length || 0}`,
-            );
-            info(
-              `Environment discordToken present: ${!!process.env.discordToken}`,
-            );
-            info(
-              `Environment discordToken length: ${process.env.discordToken?.length || 0}`,
-            );
-            info(
-              `Environment DISCORDTOKEN present: ${!!process.env.DISCORDTOKEN}`,
-            );
-            info(
-              `Environment DISCORDTOKEN length: ${process.env.DISCORDTOKEN?.length || 0}`,
-            );
-            info(`Environment token present: ${!!process.env.token}`);
-            info(`Environment token length: ${process.env.token?.length || 0}`);
-            info(`Client token present: ${!!this.toolContext!.client.token}`);
-            info(
-              `Client token length: ${this.toolContext!.client.token?.length || 0}`,
-            );
-            info("=== END LOGIN ATTEMPT LOG ===");
-
-            result = await loginHandler(params, this.toolContext!);
-            // Log client state after login
-            info(
-              `Client state after login: ${JSON.stringify({
-                isReady: this.toolContext!.client.isReady(),
-                hasToken: !!this.toolContext!.client.token,
-                user: this.toolContext!.client.user
-                  ? {
-                      id: this.toolContext!.client.user.id,
-                      tag: this.toolContext!.client.user.tag,
-                    }
-                  : null,
-              })}`,
-            );
-            break;
-
           case "discord_login_status":
-            result = await loginStatusHandler({}, this.toolContext!);
-            break;
-
           case "discord_set_token":
-            result = await setTokenHandler(params, this.toolContext!);
-            break;
-
           case "discord_validate_token":
-            result = await validateTokenHandler(params, this.toolContext!);
-            break;
-
           case "discord_logout":
-            result = await logoutHandler(params, this.toolContext!);
-            break;
-
           case "discord_update_config":
-            result = await updateConfigHandler(params, this.toolContext!);
-            break;
-
           case "discord_health_check":
-            result = await healthCheckHandler(params, this.toolContext!);
-            break;
-
           case "discord_list_servers":
-            // Check if client is logged in
-            if (!this.toolContext!.client.isReady()) {
-              return res.json({
-                jsonrpc: "2.0",
-                error: {
-                  code: -32603,
-                  message:
-                    "Discord client not logged in. Please use discord_login tool first.",
-                },
-                id: req.body?.id || null,
-              });
-            }
-
-            result = await listServersHandler({}, this.toolContext!);
-            break;
-
-          case "discord_list_servers":
-            // Check if client is logged in
-            if (!this.toolContext!.client.isReady()) {
-              return res.json({
-                jsonrpc: "2.0",
-                error: {
-                  code: -32603,
-                  message:
-                    "Discord client not logged in. Please use discord_login tool first.",
-                },
-                id: req.body?.id || null,
-              });
-            }
-            result = await listServersHandler({}, this.toolContext!);
-            break;
-
-          // Make sure Discord client is logged in for other Discord API tools
-          // but return a proper JSON-RPC error rather than throwing an exception
           case "discord_send":
           case "discord_get_forum_channels":
           case "discord_create_forum_post":
@@ -486,429 +316,23 @@ export class StreamableHttpTransport implements MCPTransport {
           case "discord_create_category":
           case "discord_edit_category":
           case "discord_delete_category":
-            // Check if client is logged in
-            if (!this.toolContext!.client.isReady()) {
-              error(
-                `Client not ready for method ${method}, client state: ${JSON.stringify(
-                  {
-                    isReady: this.toolContext!.client.isReady(),
-                    hasToken: !!this.toolContext!.client.token,
-                    user: this.toolContext!.client.user
-                      ? {
-                          id: this.toolContext!.client.user.id,
-                          tag: this.toolContext!.client.user.tag,
-                        }
-                      : null,
-                  },
-                )}`,
-              );
-
-              // Check if we have a token but not ready - try to force reconnect
-              if (this.toolContext!.client.token) {
-                info("Has token but not ready - attempting to force reconnect");
-                try {
-                  // Attempt to force login with existing token
-                  await this.toolContext!.client.login(
-                    this.toolContext!.client.token,
-                  );
-                  info(
-                    `Force reconnect successful: ${this.toolContext!.client.isReady()}`,
-                  );
-
-                  // If still not ready after reconnect, return error
-                  if (!this.toolContext!.client.isReady()) {
-                    return res.json({
-                      jsonrpc: "2.0",
-                      error: {
-                        code: -32603,
-                        message:
-                          "Discord client reconnect failed. Please use discord_login tool first.",
-                      },
-                      id: req.body?.id || null,
-                    });
-                  }
-
-                  // Continue with original request as now logged in
-                  info(
-                    "Reconnected successfully, continuing with original request",
-                  );
-                } catch (reconnectError) {
-                  error(
-                    `Reconnect failed: ${reconnectError instanceof Error ? reconnectError.message : String(reconnectError)}`,
-                  );
-                  return res.json({
-                    jsonrpc: "2.0",
-                    error: {
-                      code: -32603,
-                      message:
-                        "Discord client reconnect failed. Please use discord_login tool first.",
-                    },
-                    id: req.body?.id || null,
-                  });
-                }
-              } else {
-                return res.json({
-                  jsonrpc: "2.0",
-                  error: {
-                    code: -32603,
-                    message:
-                      "Discord client not logged in. Please use discord_login tool first.",
-                  },
-                  id: req.body?.id || null,
-                });
-              }
-            }
-
-            // Call appropriate handler based on method
-            switch (method) {
-              case "discord_send":
-                result = await sendMessageHandler(params, this.toolContext!);
-                break;
-              case "discord_get_forum_channels":
-                result = await getForumChannelsHandler(
-                  params,
-                  this.toolContext!,
-                );
-                break;
-              case "discord_create_forum_post":
-                result = await createForumPostHandler(
-                  params,
-                  this.toolContext!,
-                );
-                break;
-              case "discord_get_forum_post":
-                result = await getForumPostHandler(params, this.toolContext!);
-                break;
-              case "discord_reply_to_forum":
-                result = await replyToForumHandler(params, this.toolContext!);
-                break;
-              case "discord_delete_forum_post":
-                result = await deleteForumPostHandler(
-                  params,
-                  this.toolContext!,
-                );
-                break;
-              case "discord_create_text_channel":
-                result = await createTextChannelHandler(
-                  params,
-                  this.toolContext!,
-                );
-                break;
-              case "discord_delete_channel":
-                result = await deleteChannelHandler(params, this.toolContext!);
-                break;
-              case "discord_read_messages":
-                result = await readMessagesHandler(params, this.toolContext!);
-                break;
-              case "discord_get_server_info":
-                result = await getServerInfoHandler(params, this.toolContext!);
-                break;
-              case "discord_add_reaction":
-                result = await addReactionHandler(params, this.toolContext!);
-                break;
-              case "discord_add_multiple_reactions":
-                result = await addMultipleReactionsHandler(
-                  params,
-                  this.toolContext!,
-                );
-                break;
-              case "discord_remove_reaction":
-                result = await removeReactionHandler(params, this.toolContext!);
-                break;
-              case "discord_delete_message":
-                result = await deleteMessageHandler(params, this.toolContext!);
-                break;
-              case "discord_create_webhook":
-                result = await createWebhookHandler(params, this.toolContext!);
-                break;
-              case "discord_send_webhook_message":
-                result = await sendWebhookMessageHandler(
-                  params,
-                  this.toolContext!,
-                );
-                break;
-              case "discord_edit_webhook":
-                result = await editWebhookHandler(params, this.toolContext!);
-                break;
-              case "discord_delete_webhook":
-                result = await deleteWebhookHandler(params, this.toolContext!);
-                break;
-              case "discord_create_category":
-                result = await createCategoryHandler(params, this.toolContext!);
-                break;
-              case "discord_edit_category":
-                result = await editCategoryHandler(params, this.toolContext!);
-                break;
-              case "discord_delete_category":
-                result = await deleteCategoryHandler(params, this.toolContext!);
-                break;
-            }
-            break;
-
-          case "tools/call":
-            // Handle new tools/call method format
-            const toolName = params.name;
-            const toolArgs = params.arguments || {};
+            // Handle legacy direct method calls
+            const toolNameLegacy = method;
+            const toolArgsLegacy = params;
 
             // Check if Discord client is logged in for Discord API tools
             if (
-              toolName !== "discord_login" &&
-              toolName.startsWith("discord_") &&
+              toolNameLegacy !== "discord_login" &&
+              toolNameLegacy.startsWith("discord_") &&
               !this.toolContext!.client.isReady()
             ) {
-              error(
-                `Client not ready for tool ${toolName}, client state: ${JSON.stringify(
-                  {
-                    isReady: this.toolContext!.client.isReady(),
-                    hasToken: !!this.toolContext!.client.token,
-                    user: this.toolContext!.client.user
-                      ? {
-                          id: this.toolContext!.client.user.id,
-                          tag: this.toolContext!.client.user.tag,
-                        }
-                      : null,
-                  },
-                )}`,
-              );
-
-              // Check if we have a token but not ready - try to force reconnect
-              if (this.toolContext!.client.token) {
-                info("Has token but not ready - attempting to force reconnect");
-                try {
-                  // Attempt to force login with existing token
-                  await this.toolContext!.client.login(
-                    this.toolContext!.client.token,
-                  );
-                  info(
-                    `Force reconnect successful: ${this.toolContext!.client.isReady()}`,
-                  );
-
-                  // If still not ready after reconnect, return error
-                  if (!this.toolContext!.client.isReady()) {
-                    return res.json({
-                      jsonrpc: "2.0",
-                      error: {
-                        code: -32603,
-                        message:
-                          "Discord client reconnect failed. Please use discord_login tool first.",
-                      },
-                      id: req.body?.id || null,
-                    });
-                  }
-
-                  // Continue with original request as now logged in
-                  info(
-                    "Reconnected successfully, continuing with original request",
-                  );
-                } catch (reconnectError) {
-                  error(
-                    `Reconnect failed: ${reconnectError instanceof Error ? reconnectError.message : String(reconnectError)}`,
-                  );
-                  return res.json({
-                    jsonrpc: "2.0",
-                    error: {
-                      code: -32603,
-                      message:
-                        "Discord client reconnect failed. Please use discord_login tool first.",
-                    },
-                    id: req.body?.id || null,
-                  });
-                }
-              } else {
-                return res.json({
-                  jsonrpc: "2.0",
-                  error: {
-                    code: -32603,
-                    message:
-                      "Discord client not logged in. Please use discord_login tool first.",
-                  },
-                  id: req.body?.id || null,
-                });
-              }
+              return this.handleDiscordClientNotReady(res, toolNameLegacy);
             }
 
-            // Call the appropriate handler based on tool name
-            switch (toolName) {
-              case "discord_login":
-                result = await loginHandler(toolArgs, this.toolContext!);
-                // Log client state after login
-                info(
-                  `Client state after login: ${JSON.stringify({
-                    isReady: this.toolContext!.client.isReady(),
-                    hasToken: !!this.toolContext!.client.token,
-                    user: this.toolContext!.client.user
-                      ? {
-                          id: this.toolContext!.client.user.id,
-                          tag: this.toolContext!.client.user.tag,
-                        }
-                      : null,
-                  })}`,
-                );
-                break;
-
-              case "discord_set_token":
-                result = await setTokenHandler(toolArgs, this.toolContext!);
-                break;
-
-              case "discord_validate_token":
-                result = await validateTokenHandler(
-                  toolArgs,
-                  this.toolContext!,
-                );
-                break;
-
-              case "discord_login_status":
-                result = await loginStatusHandler(toolArgs, this.toolContext!);
-                break;
-
-              case "discord_logout":
-                result = await logoutHandler(toolArgs, this.toolContext!);
-                break;
-
-              case "discord_update_config":
-                result = await updateConfigHandler(toolArgs, this.toolContext!);
-                break;
-
-              case "discord_health_check":
-                result = await healthCheckHandler(toolArgs, this.toolContext!);
-                break;
-
-              case "discord_list_servers":
-                result = await listServersHandler(toolArgs, this.toolContext!);
-                break;
-
-              case "discord_send":
-                result = await sendMessageHandler(toolArgs, this.toolContext!);
-                break;
-
-              case "discord_get_forum_channels":
-                result = await getForumChannelsHandler(
-                  toolArgs,
-                  this.toolContext!,
-                );
-                break;
-
-              case "discord_create_forum_post":
-                result = await createForumPostHandler(
-                  toolArgs,
-                  this.toolContext!,
-                );
-                break;
-
-              case "discord_get_forum_post":
-                result = await getForumPostHandler(toolArgs, this.toolContext!);
-                break;
-
-              case "discord_reply_to_forum":
-                result = await replyToForumHandler(toolArgs, this.toolContext!);
-                break;
-
-              case "discord_delete_forum_post":
-                result = await deleteForumPostHandler(
-                  toolArgs,
-                  this.toolContext!,
-                );
-                break;
-
-              case "discord_create_text_channel":
-                result = await createTextChannelHandler(
-                  toolArgs,
-                  this.toolContext!,
-                );
-                break;
-
-              case "discord_delete_channel":
-                result = await deleteChannelHandler(
-                  toolArgs,
-                  this.toolContext!,
-                );
-                break;
-
-              case "discord_read_messages":
-                result = await readMessagesHandler(toolArgs, this.toolContext!);
-                break;
-
-              case "discord_get_server_info":
-                result = await getServerInfoHandler(
-                  toolArgs,
-                  this.toolContext!,
-                );
-                break;
-
-              case "discord_add_reaction":
-                result = await addReactionHandler(toolArgs, this.toolContext!);
-                break;
-
-              case "discord_add_multiple_reactions":
-                result = await addMultipleReactionsHandler(
-                  toolArgs,
-                  this.toolContext!,
-                );
-                break;
-
-              case "discord_remove_reaction":
-                result = await removeReactionHandler(
-                  toolArgs,
-                  this.toolContext!,
-                );
-                break;
-
-              case "discord_delete_message":
-                result = await deleteMessageHandler(
-                  toolArgs,
-                  this.toolContext!,
-                );
-                break;
-
-              case "discord_create_webhook":
-                result = await createWebhookHandler(
-                  toolArgs,
-                  this.toolContext!,
-                );
-                break;
-
-              case "discord_send_webhook_message":
-                result = await sendWebhookMessageHandler(
-                  toolArgs,
-                  this.toolContext!,
-                );
-                break;
-
-              case "discord_edit_webhook":
-                result = await editWebhookHandler(toolArgs, this.toolContext!);
-                break;
-
-              case "discord_delete_webhook":
-                result = await deleteWebhookHandler(
-                  toolArgs,
-                  this.toolContext!,
-                );
-                break;
-              case "discord_create_category":
-                result = await createCategoryHandler(
-                  toolArgs,
-                  this.toolContext!,
-                );
-                break;
-              case "discord_edit_category":
-                result = await editCategoryHandler(toolArgs, this.toolContext!);
-                break;
-              case "discord_delete_category":
-                result = await deleteCategoryHandler(
-                  toolArgs,
-                  this.toolContext!,
-                );
-                break;
-
-              default:
-                return res.status(400).json({
-                  jsonrpc: "2.0",
-                  error: {
-                    code: -32601,
-                    message: `Unknown tool: ${toolName}`,
-                  },
-                  id: req.body?.id || null,
-                });
+            try {
+              result = await handleToolCall(toolNameLegacy, toolArgsLegacy, this.toolContext!);
+            } catch (toolError) {
+              return this.handleToolError(res, toolError, req.body?.id || null);
             }
             break;
 
@@ -1016,6 +440,108 @@ export class StreamableHttpTransport implements MCPTransport {
     }
   }
 
+  private async handleDiscordClientNotReady(res: Response, toolName: string) {
+    error(
+      `Client not ready for tool ${toolName}, client state: ${JSON.stringify(
+        {
+          isReady: this.toolContext!.client.isReady(),
+          hasToken: !!this.toolContext!.client.token,
+          user: this.toolContext!.client.user
+            ? {
+                id: this.toolContext!.client.user.id,
+                tag: this.toolContext!.client.user.tag,
+              }
+            : null,
+        },
+      )}`,
+    );
+
+    // Check if we have a token but not ready - try to force reconnect
+    if (this.toolContext!.client.token) {
+      info("Has token but not ready - attempting to force reconnect");
+      try {
+        // Attempt to force login with existing token
+        await this.toolContext!.client.login(
+          this.toolContext!.client.token,
+        );
+        info(
+          `Force reconnect successful: ${this.toolContext!.client.isReady()}`,
+        );
+
+        // If still not ready after reconnect, return error
+        if (!this.toolContext!.client.isReady()) {
+          return res.json({
+            jsonrpc: "2.0",
+            error: {
+              code: -32603,
+              message:
+                "Discord client reconnect failed. Please use discord_login tool first.",
+            },
+            id: null,
+          });
+        }
+
+        // Continue with original request as now logged in
+        info(
+          "Reconnected successfully, continuing with original request",
+        );
+        // Return null to indicate we should continue processing
+        return null;
+      } catch (reconnectError) {
+        error(
+          `Reconnect failed: ${reconnectError instanceof Error ? reconnectError.message : String(reconnectError)}`,
+        );
+        return res.json({
+          jsonrpc: "2.0",
+          error: {
+            code: -32603,
+            message:
+              "Discord client reconnect failed. Please use discord_login tool first.",
+          },
+          id: null,
+        });
+      }
+    } else {
+      return res.json({
+        jsonrpc: "2.0",
+        error: {
+          code: -32603,
+          message:
+            "Discord client not logged in. Please use discord_login tool first.",
+        },
+        id: null,
+      });
+    }
+  }
+
+  private handleToolError(res: Response, toolError: any, id: any) {
+    error("Tool execution error: " + String(toolError));
+    if (
+      toolError &&
+      typeof toolError === "object" &&
+      "name" in toolError &&
+      toolError.name === "ZodError"
+    ) {
+      return res.json({
+        jsonrpc: "2.0",
+        error: {
+          code: -32602,
+          message: `Invalid parameters: ${toolError && typeof toolError === "object" && "message" in toolError ? String((toolError as any).message) : "Unknown validation error"}`,
+        },
+        id: id,
+      });
+    }
+    // Handle all other errors
+    return res.json({
+      jsonrpc: "2.0",
+      error: {
+        code: -32603,
+        message: toolError instanceof Error ? toolError.message : "Unknown error",
+      },
+      id: id,
+    });
+  }
+
   async start(server: Server): Promise<void> {
     this.server = server;
     info("Starting HTTP transport with server: " + String(!!this.server));
@@ -1107,22 +633,5 @@ export class StreamableHttpTransport implements MCPTransport {
         });
       });
     }
-  }
-
-  // Health check methods for Smithery deployment
-  private getHealthStatus() {
-    return configManager.getHealthStatus();
-  }
-
-  private getConfigSummary() {
-    return configManager.getConfigSummary();
-  }
-
-  private getMissingRequirements() {
-    return configManager.getMissingRequirements();
-  }
-
-  private isConfigured() {
-    return configManager.isConfigured();
   }
 }

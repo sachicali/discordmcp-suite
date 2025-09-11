@@ -73,7 +73,7 @@ const autoLogin = async () => {
     return;
   }
 
-  info(`Discord token configured (length: ${token.length})`);
+  info("Discord token configured");
 
   try {
     info("Attempting to log in to Discord...");
